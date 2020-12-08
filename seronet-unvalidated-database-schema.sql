@@ -118,7 +118,7 @@ CREATE TABLE `Comorbidity` (
 
 CREATE TABLE `Biospecimen` (
   `Biospecimen_ID` varchar(255) PRIMARY KEY,
-  `Research_Participant_ID` FOREIGNKEY,
+  `Research_Participant_ID` varchar(255),
   `Test_Agreement` varchar(255),
   `Shipping_ID` varchar(255),
   `Biospecimen_Group` varchar(255),
@@ -151,7 +151,7 @@ CREATE TABLE `Biospecimen` (
 
 CREATE TABLE `Collection_Tube` (
   `Collection_Tube_Type_Lot_Number` varchar(255) PRIMARY KEY,
-  `Biospecimen_ID` FOREIGNKEY,
+  `Biospecimen_ID` varchar(255),
   `Collection_Tube_Type` varchar(255),
   `Collection_Tube_Type_Catalog_Number` varchar(255),
   `Collection_Tube_Type_Expiration_Date` Date
@@ -159,14 +159,14 @@ CREATE TABLE `Collection_Tube` (
 
 CREATE TABLE `Equipment` (
   `Equipment_ID` varchar(255),
-  `Biospecimen_ID` FOREIGNKEY,
+  `Biospecimen_ID` varchar(255),
   `Equipment_Type` varchar(255),
   `Equipment_Calibration_Due_Date` date
 );
 
 CREATE TABLE `Reagent` (
   `Reagent_Lot_Number` varchar(255),
-  `Biospecimen_ID` FOREIGNKEY,
+  `Biospecimen_ID` varchar(255),
   `Reagent_Name` varchar(255),
   `Reagent_Catalog_Number` varchar(255),
   `Reagent_Expiration_Date` date
@@ -175,7 +175,7 @@ CREATE TABLE `Reagent` (
 CREATE TABLE `Aliquot` (
   `Aliquot_ID` varchar(255) PRIMARY KEY,
   `Biorepository_ID` varchar(255),
-  `Biospecimen_ID` FOREIGNKEY,
+  `Biospecimen_ID` varchar(255),
   `Aliquot_Volume` int,
   `Aliquot_Units` varchar(255),
   `Aliquot_Initials` varchar(3)
@@ -186,20 +186,20 @@ CREATE TABLE `Aliquot_Tube` (
   `Aliquot_Tube_Type` varchar(255),
   `Aliquot_Tube_Type_Catalog_Number` varchar(255),
   `Aliquot_Tube_Type_Expiration_Date` date,
-  `Aliquot_ID` FOREIGNKEY
+  `Aliquot_ID` varchar(255)
 );
 
 CREATE TABLE `Biorepository_Aliquot` (
   `Biorepository_Aliquot_BarCode` varchar(255) PRIMARY KEY,
-  `Biorepository_ID` FOREIGNKEY,
+  `Biorepository_ID` varchar(255),
   `Biorepository_Aliquot_Volume` int,
   `Biorepository_Aliquot_Volume_Units` varchar(255),
   `Biorepository_Aliquot_Destination` varchar(255)
 );
 
 CREATE TABLE `Confirmatory_Test_Result` (
-  `Research_Participant_ID` FOREIGNKEY,
-  `Assay_ID` FOREIGNKEY,
+  `Research_Participant_ID` varchar(255),
+  `Assay_ID` varchar(255),
   `Target_Antigen` varchar(255),
   `Assay_Kit_Lot_Number` varchar(255),
   `Assay_Result` varchar(255),
@@ -214,7 +214,7 @@ CREATE TABLE `Submission_MetaData` (
   `Submission_Date` Date,
   `Submission_time` timestamp,
   `Submission_CBC` varchar(255),
-  `Research_Participant_ID` FOREIGNKEY
+  `Research_Participant_ID` varchar(255)
 );
 
 CREATE TABLE `Assay_Metadata` (
@@ -252,10 +252,11 @@ CREATE TABLE `Assay_Metadata` (
 );
 
 CREATE TABLE `Assay_Target` (
-  `Assay_ID` FOREIGNKEY,
+  `Assay_ID` varchar(255),
   `Target_Antigen` varchar(255),
   `Target_Antigen_Sub_Region` varchar(255),
   `Assay_Antigen_Source` varchar(255)
+  PRIMARY KEY (`Assay_ID`, `Target_Antigen`)
 );
 
 ALTER TABLE `Demographic_Data` ADD FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Submission_MetaData` (`Research_Participant_ID`);
