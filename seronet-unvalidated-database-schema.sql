@@ -216,17 +216,6 @@ CREATE TABLE IF NOT EXISTS `Aliquot_Tube` (
   FOREIGN KEY (`Aliquot_ID`) REFERENCES `Aliquot` (`Aliquot_ID`)
 );
 
-CREATE TABLE IF NOT EXISTS `Biorepository_Aliquot` (
-  `Biorepository_Aliquot_BarCode` varchar(255) NOT NULL,
-  `Biorepository_ID` varchar(255),
-  `Submission_CBC` varchar(255),
-  `Biorepository_Aliquot_Volume` int,
-  `Biorepository_Aliquot_Volume_Units` varchar(255),
-  `Biorepository_Aliquot_Destination` varchar(255),
-  PRIMARY KEY (`Biorepository_Aliquot_BarCode`),
-  FOREIGN KEY (`Biorepository_ID`) REFERENCES `Aliquot` (`Biorepository_ID`)
-);
-
 CREATE TABLE IF NOT EXISTS `Assay_Metadata` (
   `Assay_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
