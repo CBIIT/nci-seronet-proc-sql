@@ -1,14 +1,14 @@
-CREATE TABLE `Demographic_Data` (
+CREATE TABLE IF NOT EXISTS `Demographic_Data` (
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `Age` int,
   `Race` varchar(255),
   `Ethnicity` varchar(255),
   `Gender` varchar(255),
-  PRIMARY KEY (`Research_Participant_ID`),
+  PRIMARY KEY (`Research_Participant_ID`)
 );
 
-CREATE TABLE `Prior_Test_Result` (
+CREATE TABLE IF NOT EXISTS `Prior_Test_Result` (
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `SARS_CoV_2_PCR_Test_Result` varchar(255),
@@ -73,7 +73,7 @@ CREATE TABLE `Prior_Test_Result` (
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
 );
 
-CREATE TABLE `Prior_Covid_Outcome` (
+CREATE TABLE IF NOT EXISTS `Prior_Covid_Outcome` (
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `Is_Symptomatic` varchar(25),
@@ -85,7 +85,7 @@ CREATE TABLE `Prior_Covid_Outcome` (
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
 );
 
-CREATE TABLE `Covid_Symptom` (
+CREATE TABLE IF NOT EXISTS `Covid_Symptom` (
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `Fever` varchar(25),
@@ -111,10 +111,9 @@ CREATE TABLE `Covid_Symptom` (
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
 );
 
-CREATE TABLE `Comorbidity` (
+CREATE TABLE IF NOT EXISTS `Comorbidity` (
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
-  `Disease_Severity` int,
   `Diabetes_Mellitus` varchar(25),
   `Hypertension` varchar(25),
   `Severe_Obesity` varchar(25),
@@ -130,7 +129,7 @@ CREATE TABLE `Comorbidity` (
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
 );
 
-CREATE TABLE `Biospecimen` (
+CREATE TABLE IF NOT EXISTS `Biospecimen` (
   `Biospecimen_ID` varchar(255) NOT NULL,
   `Research_Participant_ID` varchar(255),
   `Test_Agreement` varchar(255),
@@ -166,7 +165,7 @@ CREATE TABLE `Biospecimen` (
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
 );
 
-CREATE TABLE `Collection_Tube` (
+CREATE TABLE IF NOT EXISTS `Collection_Tube` (
   `Collection_Tube_Type_Lot_Number` varchar(255) NOT NULL,
   `Biospecimen_ID` varchar(255),
   `Collection_Tube_Type` varchar(255),
@@ -176,7 +175,7 @@ CREATE TABLE `Collection_Tube` (
   FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`)
 );
 
-CREATE TABLE `Equipment` (
+CREATE TABLE IF NOT EXISTS `Equipment` (
   `Equipment_ID` varchar(255) NOT NULL,
   `Biospecimen_ID` varchar(255) NOT NULL,
   `Equipment_Type` varchar(255),
@@ -185,7 +184,7 @@ CREATE TABLE `Equipment` (
   FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`)
 );
 
-CREATE TABLE `Reagent` (
+CREATE TABLE IF NOT EXISTS `Reagent` (
   `Reagent_Lot_Number` varchar(255) NOT NULL,
   `Biospecimen_ID` varchar(255) NOT NULL,
   `Reagent_Name` varchar(255),
@@ -195,7 +194,7 @@ CREATE TABLE `Reagent` (
   FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`)
 );
 
-CREATE TABLE `Aliquot` (
+CREATE TABLE IF NOT EXISTS `Aliquot` (
   `Aliquot_ID` varchar(255) NOT NULL,
   `Biorepository_ID` varchar(255),
   `Biospecimen_ID` varchar(255),
@@ -207,7 +206,7 @@ CREATE TABLE `Aliquot` (
   FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`)
 );
 
-CREATE TABLE `Aliquot_Tube` (
+CREATE TABLE IF NOT EXISTS `Aliquot_Tube` (
   `Aliquot_Tube_Type_Lot_Number` varchar(255) NOT NULL,
   `Aliquot_Tube_Type` varchar(255),
   `Aliquot_Tube_Type_Catalog_Number` varchar(255),
@@ -217,7 +216,7 @@ CREATE TABLE `Aliquot_Tube` (
   FOREIGN KEY (`Aliquot_ID`) REFERENCES `Aliquot` (`Aliquot_ID`)
 );
 
-CREATE TABLE `Biorepository_Aliquot` (
+CREATE TABLE IF NOT EXISTS `Biorepository_Aliquot` (
   `Biorepository_Aliquot_BarCode` varchar(255) NOT NULL,
   `Biorepository_ID` varchar(255),
   `Submission_CBC` varchar(255),
@@ -228,32 +227,7 @@ CREATE TABLE `Biorepository_Aliquot` (
   FOREIGN KEY (`Biorepository_ID`) REFERENCES `Aliquot` (`Biorepository_ID`)
 );
 
-CREATE TABLE `Confirmatory_Test_Result` (
-  `Research_Participant_ID` varchar(255) NOT NULL,
-  `Submission_CBC` varchar(255),
-  `Assay_ID` varchar(255) NOT NULL,
-  `Assay_Target` varchar(255) NOT NULL,
-  `Assay_Kit_Lot_Number` varchar(255),
-  `Assay_Result` varchar(255),
-  `Assay_Replicate` int,
-  `Date_of_Test` date,
-  `Test_Operator_Initials` varchar(255),
-  PRIMARY KEY (`Research_Participant_ID`, `Assay_ID`, `Assay_Target`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`),
-  FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Target` (`Assay_ID`)
-);
-
-CREATE TABLE `Submission_MetaData` (
-  `Submission_ID` varchar(255) NOT NULL,
-  `Submission_Date` date,
-  `Submission_time` timestamp,
-  `Submission_CBC` varchar(255),
-  `Research_Participant_ID` varchar(255) NOT NULL,
-  PRIMARY KEY (`Submission_ID`)
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
-);
-
-CREATE TABLE `Assay_Metadata` (
+CREATE TABLE IF NOT EXISTS `Assay_Metadata` (
   `Assay_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `Technology_Type` varchar(255),
@@ -289,11 +263,35 @@ CREATE TABLE `Assay_Metadata` (
   PRIMARY KEY (`Assay_ID`)
 );
 
-CREATE TABLE `Assay_Target` (
+CREATE TABLE IF NOT EXISTS `Assay_Target` (
   `Assay_ID` varchar(255) NOT NULL,
   `Assay_Target` varchar(255) NOT NULL,
   `Assay_Target_Sub_Region` varchar(255),
   `Assay_Antigen_Source` varchar(255),
   PRIMARY KEY (`Assay_ID`, `Assay_Target`),
   FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Metadata` (`Assay_ID`)
+);
+
+CREATE TABLE IF NOT EXISTS `Confirmatory_Test_Result` (
+  `Research_Participant_ID` varchar(255) NOT NULL,
+  `Submission_CBC` varchar(255),
+  `Assay_ID` varchar(255) NOT NULL,
+  `Assay_Target` varchar(255) NOT NULL,
+  `Assay_Kit_Lot_Number` varchar(255),
+  `Assay_Result` varchar(255),
+  `Assay_Replicate` int,
+  `Date_of_Test` date,
+  `Test_Operator_Initials` varchar(255),
+  PRIMARY KEY (`Research_Participant_ID`, `Assay_ID`, `Assay_Target`),
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`),
+  FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Target` (`Assay_ID`)
+);
+
+CREATE TABLE IF NOT EXISTS `Submission_MetaData` (
+  `Submission_ID` varchar(255) NOT NULL,
+  `Submission_time` datetime,
+  `Submission_CBC` varchar(255),
+  `Research_Participant_ID` varchar(255),
+  PRIMARY KEY (`Submission_ID`)
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
 );
