@@ -1,5 +1,6 @@
 CREATE TABLE `Demographic_Data` (
   `Research_Participant_ID` varchar(255) NOT NULL,
+  `Submission_CBC` varchar(255),
   `Age` int,
   `Race` varchar(255),
   `Ethnicity` varchar(255),
@@ -10,6 +11,7 @@ CREATE TABLE `Demographic_Data` (
 
 CREATE TABLE `Prior_Test_Result` (
   `Research_Participant_ID` varchar(255) NOT NULL,
+  `Submission_CBC` varchar(255),
   `SARS_CoV_2_PCR_Test_Result` varchar(255),
   `SARS_CoV_2_PCR_Test_Result_Provenance` varchar(255),
   `Date_of_SARS_CoV_2_PCR_sample_collection` date,
@@ -74,6 +76,7 @@ CREATE TABLE `Prior_Test_Result` (
 
 CREATE TABLE `Prior_Covid_Outcome` (
   `Research_Participant_ID` varchar(255) NOT NULL,
+  `Submission_CBC` varchar(255),
   `Is_Symptomatic` boolean,
   `Date_of_Symptom_Onset` date,
   `Symptoms_Resolved` varchar(25),
@@ -85,6 +88,7 @@ CREATE TABLE `Prior_Covid_Outcome` (
 
 CREATE TABLE `Covid_Symptom` (
   `Research_Participant_ID` varchar(255) NOT NULL,
+  `Submission_CBC` varchar(255),
   `Fever` boolean,
   `Temperature_over_100` boolean,
   `Chills` boolean,
@@ -110,6 +114,7 @@ CREATE TABLE `Covid_Symptom` (
 
 CREATE TABLE `Comorbidity` (
   `Research_Participant_ID` varchar(255) NOT NULL,
+  `Submission_CBC` varchar(255),
   `Disease_Severity` int,
   `Diabetes_Mellitus` boolean,
   `Hypertension` boolean,
@@ -130,6 +135,7 @@ CREATE TABLE `Biospecimen` (
   `Biospecimen_ID` varchar(255) NOT NULL,
   `Research_Participant_ID` varchar(255),
   `Test_Agreement` varchar(255),
+  `Submission_CBC` varchar(255),
   `Shipping_ID` varchar(255),
   `Biospecimen_Group` varchar(255),
   `Biospecimen_Type` varchar(255),
@@ -194,6 +200,7 @@ CREATE TABLE `Aliquot` (
   `Aliquot_ID` varchar(255) NOT NULL,
   `Biorepository_ID` varchar(255),
   `Biospecimen_ID` varchar(255),
+  `Submission_CBC` varchar(255),
   `Aliquot_Volume` int,
   `Aliquot_Units` varchar(255),
   `Aliquot_Initials` varchar(3),
@@ -214,6 +221,7 @@ CREATE TABLE `Aliquot_Tube` (
 CREATE TABLE `Biorepository_Aliquot` (
   `Biorepository_Aliquot_BarCode` varchar(255) NOT NULL,
   `Biorepository_ID` varchar(255),
+  `Submission_CBC` varchar(255),
   `Biorepository_Aliquot_Volume` int,
   `Biorepository_Aliquot_Volume_Units` varchar(255),
   `Biorepository_Aliquot_Destination` varchar(255),
@@ -223,6 +231,7 @@ CREATE TABLE `Biorepository_Aliquot` (
 
 CREATE TABLE `Confirmatory_Test_Result` (
   `Research_Participant_ID` varchar(255) NOT NULL,
+  `Submission_CBC` varchar(255),
   `Assay_ID` varchar(255) NOT NULL,
   `Target_Antigen` varchar(255) NOT NULL,
   `Assay_Kit_Lot_Number` varchar(255),
@@ -246,6 +255,7 @@ CREATE TABLE `Submission_MetaData` (
 
 CREATE TABLE `Assay_Metadata` (
   `Assay_ID` varchar(255) NOT NULL,
+  `Submission_CBC` varchar(255),
   `Technology_Type` varchar(255),
   `Assay_Name` varchar(255),
   `Assay_Manufacturer` varchar(255),
