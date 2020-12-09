@@ -281,6 +281,6 @@ CREATE TABLE IF NOT EXISTS `Submission_MetaData` (
   `Submission_time` datetime,
   `Submission_CBC` varchar(255),
   `Research_Participant_ID` varchar(255),
-  PRIMARY KEY (`Submission_ID`)
+  PRIMARY KEY (`Submission_ID`),
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
 );
