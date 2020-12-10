@@ -14,6 +14,28 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Table `table_file_remover`
 -- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `table_file_remover` (
+  `file_id` INT NOT NULL AUTO_INCREMENT,
+  `file_name` VARCHAR(255) NOT NULL,
+  `file_location` VARCHAR(255) NOT NULL,
+  `file_added_on` DATETIME NOT NULL,
+  `file_last_processed_on` DATETIME NULL,
+  `file_status` VARCHAR(45) NOT NULL DEFAULT 'IN_PROCESS',
+  `file_origin` VARCHAR(45) NOT NULL DEFAULT 'cbcXX',
+  `file_type` VARCHAR(45) NOT NULL,
+  `file_action` VARCHAR(45) NULL,
+  `file_submitted_by` VARCHAR(45) NULL,
+  `updated_by` VARCHAR(255) NULL DEFAULT 'SELECT USER()',
+  PRIMARY KEY (`file_id`),
+  UNIQUE INDEX `file_id_UNIQUE` (`file_id` ASC) VISIBLE,
+  UNIQUE INDEX `table_file_removercol_UNIQUE` (`file_name` ASC) VISIBLE,
+  UNIQUE INDEX `file_location_UNIQUE` (`file_location` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `table_file_validator`
+-- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `table_file_validator` (
   `file_id` INT NOT NULL AUTO_INCREMENT,
   `orig_file_id` INT NULL,
@@ -31,30 +53,6 @@ CREATE TABLE IF NOT EXISTS `table_file_validator` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB AUTO_INCREMENT=1000;
-
--- -----------------------------------------------------
--- Table `table_file_validator`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `table_file_validator` (
-  `validation_id` INT NOT NULL,
-  `orig_file_id` INT NULL,
-  `file_id` INT NULL AUTO_INCREMENT,
-  `validation_result_location` VARCHAR(255) NOT NULL,
-  `validation_notification_arn` VARCHAR(255) NULL,
-  `validation_date` DATETIME NULL,
-  `validation_status` VARCHAR(45) NULL DEFAULT 'NOT_PROCESSED',
-  `validation_type` VARCHAR(45) NULL DEFAULT 'AUTOMATIC',
-  `updated_by` VARCHAR(255) NULL DEFAULT 'SELECT USER()',
-  `table_file_validatorcol` VARCHAR(45) NULL,
-  PRIMARY KEY (`validation_id`),
-  UNIQUE INDEX `validation_id_UNIQUE` (`validation_id` ASC) VISIBLE,
-  INDEX `fk_file_id_idx` (`orig_file_id` ASC) VISIBLE,
-  CONSTRAINT `fk_file_id`
-    FOREIGN KEY (`orig_file_id`)
-    REFERENCES `table_file_remover` (`file_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
 
 
 
