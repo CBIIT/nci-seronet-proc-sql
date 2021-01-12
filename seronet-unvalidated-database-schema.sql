@@ -1,32 +1,31 @@
-CREATE TABLE IF NOT EXISTS `Demographic_Data` (
+drop table if exists `seronetdb-prevalidated`.`Consumable`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Consumable` (
+`Biospecimen_ID` varchar(255) not null,
+`Consumable_Name` varchar(255) not null,
+`Consumable_Catalog_Number` varchar(255),
+`Consumable_Lot_Number` varchar(255),
+`Consumable_Expiration_Date` date,
+PRIMARY KEY (`Biospecimen_ID`,`Consumable_Name`),
+FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`));
+
+drop table if exists `seronetdb-prevalidated`.`Demographic_Data`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Demographic_Data` (
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `Age` int,
   `Race` varchar(255),
   `Ethnicity` varchar(255),
   `Gender` varchar(255),
-  PRIMARY KEY (`Research_Participant_ID`)
-);
+  PRIMARY KEY (`Research_Participant_ID`));
 
-CREATE TABLE IF NOT EXISTS `Prior_Test_Result` (
+drop table if exists `seronetdb-prevalidated`.`Prior_Test_Result`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Prior_Test_Result` (
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `SARS_CoV_2_PCR_Test_Result` varchar(255),
   `SARS_CoV_2_PCR_Test_Result_Provenance` varchar(255),
   `Date_of_SARS_CoV_2_PCR_sample_collection` date,
   `Date_of_SARS_CoV_2_PCR_Test_Diagnosis` date,
-  `SARS_CoV_2_Serology_IgG_Results` varchar(255),
-  `SARS_CoV_2_Serology_IgG_Test_Result_Provenance` varchar(255),
-  `Date_of_blood_collection_IgG` date,
-  `Date_of_SARS_CoV_2_Serology_IgG_Test` date,
-  `SARS_CoV_2_Serology_IgM_Results` varchar(255),
-  `SARS_CoV_2_Serology_IgM_Test_Result_Provenance` varchar(255),
-  `Date_of_blood_collection_IgM` date,
-  `Date_of_SARS_CoV_2_Serology_IgM_test` date,
-  `SARS_CoV_2_Serology_Result_Other` varchar(255),
-  `SARS_CoV_2_Serology_Other_Test_Result_Provenance` varchar(255),
-  `Date_of_blood_collection_Other` date,
-  `Date_of_SARS_CoV_2_Other_test` date,
   `CMV_Serology_Test_Result` varchar(255),
   `CMV_Serology_Test_Result_Provenance` varchar(255),
   `Date_of_CMV_Serology_Test` date,
@@ -70,10 +69,10 @@ CREATE TABLE IF NOT EXISTS `Prior_Test_Result` (
   `Current_Seasonal_Coronavirus_infection` varchar(255),
   `Duration_of_Seasonal_Coronavirus_infection` int,
   PRIMARY KEY (`Research_Participant_ID`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
-);
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`));
 
-CREATE TABLE IF NOT EXISTS `Prior_Covid_Outcome` (
+drop table if exists `seronetdb-prevalidated`.`Prior_Covid_Outcome`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Prior_Covid_Outcome` (
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `Is_Symptomatic` varchar(25),
@@ -82,10 +81,10 @@ CREATE TABLE IF NOT EXISTS `Prior_Covid_Outcome` (
   `Date_of_Symptom_Resolution` date,
   `Covid_Disease_Severity` int,
   PRIMARY KEY (`Research_Participant_ID`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
-);
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`));
 
-CREATE TABLE IF NOT EXISTS `Covid_Symptom` (
+drop table if exists `seronetdb-prevalidated`.`Covid_Symptom`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Covid_Symptom` (
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `Fever` varchar(25),
@@ -108,10 +107,10 @@ CREATE TABLE IF NOT EXISTS `Covid_Symptom` (
   `Diarrhea` varchar(25),
   `Other_Symptom` varchar(25),
   PRIMARY KEY (`Research_Participant_ID`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
-);
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`));
 
-CREATE TABLE IF NOT EXISTS `Comorbidity` (
+drop table if exists `seronetdb-prevalidated`.`Comorbidity`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Comorbidity` (
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `Diabetes_Mellitus` varchar(25),
@@ -126,10 +125,10 @@ CREATE TABLE IF NOT EXISTS `Comorbidity` (
   `Inflammatory_Disease` varchar(25),
   `Other_Comorbidity` varchar(255),
   PRIMARY KEY (`Research_Participant_ID`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
-);
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`));
 
-CREATE TABLE IF NOT EXISTS `Biospecimen` (
+drop table if exists `seronetdb-prevalidated`.`Biospecimen`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Biospecimen` (
   `Biospecimen_ID` varchar(255) NOT NULL,
   `Research_Participant_ID` varchar(255),
   `Test_Agreement` varchar(255),
@@ -137,64 +136,64 @@ CREATE TABLE IF NOT EXISTS `Biospecimen` (
   `Shipping_ID` varchar(255),
   `Biospecimen_Group` varchar(255),
   `Biospecimen_Type` varchar(255),
-  `Initial_Volume_of_Biospecimen` int,
+  `Initial_Volume_of_Biospecimen` float,
   `Biospecimen_Collection_Company_Clinic` varchar(255),
   `Biospecimen_Collector_Initials` varchar(3),
   `Date_of_Biospecimen_Collection` Date,
-  `Time_of_Biospecimen_Collection` timestamp,
+  `Time_of_Biospecimen_Collection` time,
   `Biospecimen_Processing_Company_Clinic` varchar(255),
   `Biospecimen_Processor_Initials` varchar(3),
   `Date_of_Biospecimen_Processing` Date,
-  `Time_of_Biospecimen_Receipt` timestamp,
-  `Storage_Start_Time_80_LN2_storage` timestamp,
+  `Time_of_Biospecimen_Receipt` time,
+  `Storage_Start_Time_80_LN2_storage` datetime,
   `Storage_Time_at_2_8` float,
-  `Storage_Start_Time_at_2_8` timestamp,
+  `Storage_Start_Time_at_2_8` datetime,
   `Storage_Start_Time_at_2_8_Initials` varchar(3),
-  `Storage_End_Time_at_2_8` timestamp,
+  `Storage_End_Time_at_2_8` datetime,
   `Storage_End_Time_at_2_8_Initials` varchar(3),
   `Centrifugation_Time` float,
   `RT_Serum_Clotting_Time` float,
-  `Final_Concentration_of_Biospecimen` int,
-  `Live_Cells_Hemocytometer_Count` int,
-  `Total_Cells_Hemocytometer_Count` int,
-  `Viability_Hemocytometer_Count` int,
-  `Live_Cells_Automated_Count` int,
-  `Total_Cells_Automated_Count` int,
-  `Viability_Automated_Count` int,
+  `Final_Concentration_of_Biospecimen` float,
+  `Live_Cells_Hemocytometer_Count` float,
+  `Total_Cells_Hemocytometer_Count` float,
+  `Viability_Hemocytometer_Count` float,
+  `Live_Cells_Automated_Count` float,
+  `Total_Cells_Automated_Count` float,
+  `Viability_Automated_Count` float,
   PRIMARY KEY (`Biospecimen_ID`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
-);
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`));
 
-CREATE TABLE IF NOT EXISTS `Collection_Tube` (
+drop table if exists `seronetdb-prevalidated`.`Collection_Tube`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Collection_Tube` (
   `Collection_Tube_Type_Lot_Number` varchar(255) NOT NULL,
   `Biospecimen_ID` varchar(255),
   `Collection_Tube_Type` varchar(255),
   `Collection_Tube_Type_Catalog_Number` varchar(255),
   `Collection_Tube_Type_Expiration_Date` date,
   PRIMARY KEY (`Collection_Tube_Type_Lot_Number`, `Biospecimen_ID`),
-  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`)
-);
+  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`));
 
-CREATE TABLE IF NOT EXISTS `Equipment` (
+drop table if exists `seronetdb-prevalidated`.`Equipment`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Equipment` (
   `Equipment_ID` varchar(255) NOT NULL,
   `Biospecimen_ID` varchar(255) NOT NULL,
   `Equipment_Type` varchar(255),
   `Equipment_Calibration_Due_Date` date,
   PRIMARY KEY (`Equipment_ID`, `Biospecimen_ID`),
-  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`)
-);
+  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`));
 
-CREATE TABLE IF NOT EXISTS `Reagent` (
+drop table if exists `seronetdb-prevalidated`.`Reagent`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Reagent` (
   `Reagent_Lot_Number` varchar(255) NOT NULL,
   `Biospecimen_ID` varchar(255) NOT NULL,
   `Reagent_Name` varchar(255),
   `Reagent_Catalog_Number` varchar(255),
   `Reagent_Expiration_Date` date,
   PRIMARY KEY (`Reagent_Lot_Number`, `Biospecimen_ID`),
-  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`)
-);
+  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`));
 
-CREATE TABLE IF NOT EXISTS `Aliquot` (
+drop table if exists `seronetdb-prevalidated`.`Aliquot`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Aliquot` (
   `Aliquot_ID` varchar(255) NOT NULL,
   `Biorepository_ID` varchar(255),
   `Biospecimen_ID` varchar(255),
@@ -203,20 +202,20 @@ CREATE TABLE IF NOT EXISTS `Aliquot` (
   `Aliquot_Units` varchar(255),
   `Aliquot_Initials` varchar(3),
   PRIMARY KEY (`Aliquot_ID`),
-  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`)
-);
+  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`));
 
-CREATE TABLE IF NOT EXISTS `Aliquot_Tube` (
+drop table if exists `seronetdb-prevalidated`.`Aliquot_Tube`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Aliquot_Tube` (
   `Aliquot_Tube_Type_Lot_Number` varchar(255) NOT NULL,
   `Aliquot_Tube_Type` varchar(255),
   `Aliquot_Tube_Type_Catalog_Number` varchar(255),
   `Aliquot_Tube_Type_Expiration_Date` date,
   `Aliquot_ID` varchar(255) NOT NULL,
   PRIMARY KEY (`Aliquot_Tube_Type_Lot_Number`, `Aliquot_ID`),
-  FOREIGN KEY (`Aliquot_ID`) REFERENCES `Aliquot` (`Aliquot_ID`)
-);
+  FOREIGN KEY (`Aliquot_ID`) REFERENCES `Aliquot` (`Aliquot_ID`));
 
-CREATE TABLE IF NOT EXISTS `Assay_Metadata` (
+drop table if exists `seronetdb-prevalidated`.`Assay_Metadata`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Assay_Metadata` (
   `Assay_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `Technology_Type` varchar(255),
@@ -249,19 +248,19 @@ CREATE TABLE IF NOT EXISTS `Assay_Metadata` (
   `N_false_positive` int,
   `N_false_negative` int,
   `Peformance_Statistics_Source` varchar(255),
-  PRIMARY KEY (`Assay_ID`)
-);
+  PRIMARY KEY (`Assay_ID`));
 
-CREATE TABLE IF NOT EXISTS `Assay_Target` (
+drop table if exists `seronetdb-prevalidated`.`Assay_Target`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Assay_Target` (
   `Assay_ID` varchar(255) NOT NULL,
   `Assay_Target` varchar(255) NOT NULL,
   `Assay_Target_Sub_Region` varchar(255),
   `Assay_Antigen_Source` varchar(255),
   PRIMARY KEY (`Assay_ID`, `Assay_Target`),
-  FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Metadata` (`Assay_ID`)
-);
+  FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Metadata` (`Assay_ID`));
 
-CREATE TABLE IF NOT EXISTS `Confirmatory_Test_Result` (
+drop table if exists `seronetdb-prevalidated`.`Confirmatory_Test_Result`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Confirmatory_Test_Result` (
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `Assay_ID` varchar(255) NOT NULL,
@@ -273,14 +272,15 @@ CREATE TABLE IF NOT EXISTS `Confirmatory_Test_Result` (
   `Test_Operator_Initials` varchar(255),
   PRIMARY KEY (`Research_Participant_ID`, `Assay_ID`, `Assay_Target`),
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`),
-  FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Target` (`Assay_ID`)
-);
+  FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Target` (`Assay_ID`));
 
-CREATE TABLE IF NOT EXISTS `Submission_MetaData` (
-  `Submission_ID` INT NOT NULL AUTO_INCREMENT,
+drop table if exists `seronetdb-prevalidated`.`Submission_MetaData`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Submission_MetaData` (
+  `Submission_ID` int not null  Auto_Increment,
   `Submission_time` datetime,
   `Submission_CBC` varchar(255),
   `Research_Participant_ID` varchar(255),
-  PRIMARY KEY (`Submission_ID`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`)
-) AUTO_INCREMENT = 100;
+   PRIMARY KEY (`Submission_ID`),
+   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`))
+   AUTO_INCREMENT = 100;
+   
