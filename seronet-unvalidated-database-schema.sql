@@ -278,7 +278,7 @@ CREATE TABLE IF NOT EXISTS `Aliquot` (
   FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_Short_Name),  
   FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`),
   FOREIGN KEY (Aliquot_Tube_Lot_Number) REFERENCES Tube (Tube_Lot_Number),
-  FOREIGN KEY (Aliquot_Tube_Lot_Number) REFERENCES Tube (Tube_Catalog_Number)  
+  FOREIGN KEY (Aliquot_Tube_Catalog_Number) REFERENCES Tube (Tube_Catalog_Number)  
 );
 
 CREATE TABLE IF NOT EXISTS Tube (
@@ -366,10 +366,10 @@ CREATE TABLE IF NOT EXISTS `Participant_Confirmatory_Assay_Result` (
 );
 
 CREATE TABLE IF NOT EXISTS Submission (
-  `Submission_ID` varchar(255) NOT NULL,
+  `Submission_ID` varchar(255) PRIMARY KEY,
   `Submission_Time` datetime,
   `Submission_CBC` varchar(255),
   -- `Research_Participant_ID` varchar(255) , -- guaranteed that one submission won't contain many participants' data? Doubt it.
-  PRIMARY KEY (`Submission_ID`)
+  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_Short_Name),
   -- FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)
 );
