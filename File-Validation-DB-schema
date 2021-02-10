@@ -1,17 +1,7 @@
-#drop table if exists `seronetdb-prevalidated`.`Seronet_CBC_ID`;
-#CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Seronet_CBC_ID` (
-#	`Org_ID` int primary key not null,
-#    `Institution` varchar(255));
-
-drop table if exists `seronetdb-prevalidated`.`Consumable`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Consumable` (
-`Biospecimen_ID` varchar(255) not null,
-`Consumable_Name` varchar(255) not null,
-`Consumable_Catalog_Number` varchar(255),
-`Consumable_Lot_Number` varchar(255),
-`Consumable_Expiration_Date` date,
-PRIMARY KEY (`Biospecimen_ID`,`Consumable_Name`),
-FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`));
+drop table if exists `seronetdb-prevalidated`.`Seronet_CBC_ID`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Seronet_CBC_ID` (
+	`Org_ID` int primary key not null,
+    `Institution` varchar(255));
 
 drop table if exists `seronetdb-prevalidated`.`Demographic_Data`;
 CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Demographic_Data` (
@@ -39,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Prior_Test_Result` (
   `Date_of_CMV_Molecular_Test` date,
   `Current_CMV_infection` varchar(25),
   `Duration_of_CMV_infection` int,
+  `Duration_of_CMV_infection_unit` varchar(10),
   `HepB_sAg_Test_Result` varchar(255),
   `HepB_sAg_Test_Result_Provenance` varchar(255),
   `Date_of_HepB_sAg_Test` date,
@@ -47,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Prior_Test_Result` (
   `Date_of_HepB_Serology_Test` date,
   `Current_HepB_infection` varchar(255),
   `Duration_of_HepB_infection` int,
+  `Duration_of_HepB_infection_unit` varchar(10),
   `EBV_Molecular_Test_Result` varchar(255),
   `EBV_Molecular_Test_Result_Provenance` varchar(255),
   `Date_of_EBV_Molecular_Test` date,
@@ -55,6 +47,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Prior_Test_Result` (
   `Date_of_EBV_Serology_Test` date,
   `Current_EBV_infection` varchar(255),
   `Duration_of_EBV_infection` int,
+  `Duration_of_EBV_infection_unit` varchar(10),
   `HIV_Molecular_Test_Result` varchar(255),
   `HIV_Molecular_Test_Result_Provenance` varchar(255),
   `Date_of_HIV_Molecular_Test` date,
@@ -63,8 +56,10 @@ CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Prior_Test_Result` (
   `Date_of_HIV_Serology_Test` date,
   `Current_HIV_infection` varchar(255),
   `Duration_of_HIV_infection` int,
+  `Duration_of_HIV_infection_unit` varchar(10),
   `On_HAART_Therapy` varchar(255),
   `Duration_of_HAART_Therapy` int,
+  `Duration_of_HAART_Therapy_unit` varchar(10),
   `Seasonal_Coronavirus_Molecular_Result` varchar(255),
   `Seasonal_Coronavirus_Molecular_Test_Result_Provenance` varchar(255),
   `Date_of_Seasonal_Coronavirus_Molecular_Test` date,
@@ -73,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Prior_Test_Result` (
   `Date_of_Seasonal_Coronavirus_Serology_Test` date,
   `Current_Seasonal_Coronavirus_infection` varchar(255),
   `Duration_of_Seasonal_Coronavirus_infection` int,
+  `Duration_of_Seasonal_Coronavirus_infection_unit` varchar(10),
   PRIMARY KEY (`Research_Participant_ID`),
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`));
 
@@ -138,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Biospecimen` (
   `Research_Participant_ID` varchar(255),
   `Test_Agreement` varchar(255),
   `Submission_CBC` varchar(255),
-  `Shipping_ID` varchar(255),
+#  `Shipping_ID` varchar(255),
   `Biospecimen_Group` varchar(255),
   `Biospecimen_Type` varchar(255),
   `Initial_Volume_of_Biospecimen` float,
@@ -278,6 +274,16 @@ CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Confirmatory_Test_Result` (
   PRIMARY KEY (`Research_Participant_ID`, `Assay_ID`, `Assay_Target`),
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`),
   FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Target` (`Assay_ID`));
+
+drop table if exists `seronetdb-prevalidated`.`Consumable`;
+CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Consumable` (
+`Biospecimen_ID` varchar(255) not null,
+`Consumable_Name` varchar(255) not null,
+`Consumable_Catalog_Number` varchar(255),
+`Consumable_Lot_Number` varchar(255),
+`Consumable_Expiration_Date` date,
+PRIMARY KEY (`Biospecimen_ID`,`Consumable_Name`),
+FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`));
 
 drop table if exists `seronetdb-prevalidated`.`Submission_MetaData`;
 CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Submission_MetaData` (
