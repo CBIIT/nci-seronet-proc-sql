@@ -18,7 +18,7 @@ drop table if exists `table_submission_validator`; 			#batch validation for the 
 -- -----------------------------------------------------
 -- Table `table_file_remover`
 -- -----------------------------------------------------
-#DROP TABLE IF EXISTS `table_file_remover` ;
+DROP TABLE IF EXISTS `table_file_remover` ;
 
 CREATE TABLE IF NOT EXISTS `table_file_remover` (
   `file_id` INT NOT NULL AUTO_INCREMENT,
@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `table_file_remover` (
   `file_action` VARCHAR(45) NULL,
   `file_submitted_by` VARCHAR(45) NULL,
   `updated_by` VARCHAR(255) NULL DEFAULT 'SELECT USER()',
+  `file_md5` VARCHAR(255) NULL,
   PRIMARY KEY (`file_id`),
   UNIQUE INDEX `file_id_UNIQUE` (`file_id` ASC) VISIBLE,
   UNIQUE INDEX `file_location_UNIQUE` (`file_location` ASC) VISIBLE)
