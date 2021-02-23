@@ -1,9 +1,9 @@
-CREATE TABLE IF NOT EXISTS `CBC` (
-  CBC_Short_Name varchar(255) PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`CBC` (
+  CBC_ID varchar(255) PRIMARY KEY,
   CBC_Name varchar(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Participant (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Participant (
   `Research_Participant_ID` varchar(255)  NOT NULL,
   `Submission_CBC` varchar(255),
   `Age` int,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS Participant (
   `Ethnicity` varchar(255),
   `Gender` varchar(255),
   PRIMARY KEY (`Research_Participant_ID`),
-  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_Short_Name)
+  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_ID)
 );
 
 -- the rows in table `Clinical_Test`(Test_Name):
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS Participant (
 -- Seasonal_CoV_Serology
 -- need an "Other" test? Put a new row in this table.
 
-CREATE TABLE IF NOT EXISTS `Clinical_Test` (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Clinical_Test` (
     Test_Name varchar(255) PRIMARY KEY,
     NCIT_Code varchar(255),
     caDSR_Code varchar(255)
@@ -44,13 +44,13 @@ CREATE TABLE IF NOT EXISTS `Clinical_Test` (
 -- Seasonal_CoV
 -- SARS_CoV_2
 
-CREATE TABLE IF NOT EXISTS Infection (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Infection (
     Infectious_Agent varchar(255) PRIMARY KEY,
     NCIT_Code varchar(255),
     caDSR_Code varchar(255)
 );
 
-CREATE TABLE IF NOT EXISTS Participant_Prior_Infection_Reported (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Participant_Prior_Infection_Reported (
     Participant_Prior_Infection_ID int AUTO_INCREMENT PRIMARY KEY,
     Research_Participant_ID varchar(255) NOT NULL,
     Infectious_Agent varchar(255) NOT NULL,
@@ -63,10 +63,26 @@ CREATE TABLE IF NOT EXISTS Participant_Prior_Infection_Reported (
     On_HAART_Therapy bool,
     FOREIGN KEY (Research_Participant_ID) REFERENCES Participant (Research_Participant_ID),
     FOREIGN KEY (Infectious_Agent) REFERENCES Infection (Infectious_Agent),
-    FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_Short_Name)
+    FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_ID)
 );
 
-CREATE TABLE IF NOT EXISTS `Participant_Prior_Test_Result` (
+-- the rows in table Biospecimen_Type (Biospecimen_Type)
+-- Serum
+-- Plasma
+-- Venous_Whole_Blood
+-- Dried_Blood_Spot
+-- Nasal_Swab
+-- Bronchoalveolar_Lavage
+-- Sputum
+-- other, add a row
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Biospecimen_Type (
+  Biospecimen_Type varchar(255) PRIMARY KEY,
+  NCIT_Code varchar(255),
+  caDSR_Code varchar(255)
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_Test_Result` (
   Participant_Prior_Test_Result_ID int PRIMARY KEY AUTO_INCREMENT,
   `Research_Participant_ID` varchar(255) NOT NULL,
   Test_Name varchar(255) NOT NULL,
@@ -92,11 +108,11 @@ CREATE TABLE IF NOT EXISTS `Participant_Prior_Test_Result` (
   -- PRIMARY KEY (`Research_Participant_ID`), -- is not the primary key, one participant may have many tests
   FOREIGN KEY (Test_Name) REFERENCES Clinical_Test (Test_Name),
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`),
-  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_Short_Name),
+  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_ID),
   FOREIGN KEY (Sample_Type) REFERENCES Biospecimen_Type (Biospecimen_Type)
 );
 
-CREATE TABLE IF NOT EXISTS `Prior_Covid_Outcome` (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Prior_Covid_Outcome` (
   `Research_Participant_ID` varchar(255)  NOT NULL,
   `Submission_CBC` varchar(255) ,
   `Symptomatic` bool,
@@ -106,7 +122,7 @@ CREATE TABLE IF NOT EXISTS `Prior_Covid_Outcome` (
   `Covid_Disease_Severity` int, -- vocab table
   -- PRIMARY KEY (`Research_Participant_ID`), -- is not primary key (multiple outcomes for a single patient possible
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`),
-  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_Short_Name)
+  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_ID)
 );
 
 -- rows in table `Symptom` (Symptom_Name):
@@ -130,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `Prior_Covid_Outcome` (
 -- Diarrhea
 -- Need an 'other' symptom? Make a new row in this table.
 
-CREATE TABLE IF NOT EXISTS Symptom (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Symptom (
    Symptom_Name varchar(255) PRIMARY KEY,
    NCIT_Code varchar(255),
    caDSR_Code varchar(255)
@@ -138,7 +154,7 @@ CREATE TABLE IF NOT EXISTS Symptom (
 
 -- work in the link between individual symptomology and the outcome report
 -- 
-CREATE TABLE IF NOT EXISTS `Participant_Covid_Symptom_Reported` (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Covid_Symptom_Reported` (
   Participant_Covid_Symptom_Reported_ID int PRIMARY KEY AUTO_INCREMENT,
   `Research_Participant_ID` varchar(255)  NOT NULL,
   Symptom_Name varchar(255) NOT NULL,
@@ -148,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `Participant_Covid_Symptom_Reported` (
   -- PRIMARY KEY (`Research_Participant_ID`), -- this is a linking (many-to-many) table, each row is a unique entity
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`),
   FOREIGN KEY (Symptom_Name) REFERENCES Symptom (Symptom_Name),
-  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_Short_Name)
+  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_ID)
 );
 
 -- the rows in table Comorbidity (Comorbidity_Name)
@@ -164,13 +180,13 @@ CREATE TABLE IF NOT EXISTS `Participant_Covid_Symptom_Reported` (
 -- Inflammatory_Disease
 -- need an "Other" comorbidity? Put a new row in this table.
 
-CREATE TABLE IF NOT EXISTS Comorbidity (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Comorbidity (
   Comorbidity_Name varchar(255) PRIMARY KEY,
   NCIT_Code varchar(255),
   caDSR_Code varchar(255)
 );
 
-CREATE TABLE IF NOT EXISTS `Participant_Comorbidity_Reported` (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Comorbidity_Reported` (
   Participant_Comorbidity_Reported_ID int PRIMARY KEY AUTO_INCREMENT,
   `Research_Participant_ID` varchar(255)  NOT NULL,
   `Submission_CBC` varchar(255),
@@ -178,17 +194,27 @@ CREATE TABLE IF NOT EXISTS `Participant_Comorbidity_Reported` (
   Cormobidity_is_Present bool,
 -- PRIMARY KEY (`Research_Participant_ID`), -- not the primary key of this table
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`),
-  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_Short_Name)  
+  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_ID)  
 );
 
-CREATE TABLE IF NOT EXISTS `Biospecimen` (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Tube (
+  `Tube_ID` int AUTO_INCREMENT,
+  `Tube_Type_Lot_Number` varchar(255)  NOT NULL,
+  `Tube_Type_Catalog_Number` varchar(255)  NOT NULL,
+  `Tube_Type` varchar(255),
+  `Tube_Lot_Expiration_Date` date,
+  PRIMARY KEY (Tube_ID,Tube_Type_Lot_Number, Tube_Type_Catalog_Number)
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Biospecimen` (
   `Biospecimen_ID` varchar(255)  PRIMARY KEY,
   `Research_Participant_ID` varchar(255)  NOT NULL,
   `Test_Agreement` varchar(255), -- ?
   `Submission_CBC` varchar(255),
   `Shipping_ID` varchar(255),
-  Collection_Tube_Lot_Number varchar(255),
-  Collection_Tube_Catalog_Number varchar(255),
+  `Tube_ID` int NOT NULL,
+  `Collection_Tube_Lot_Number` varchar(255),
+  `Collection_Tube_Catalog_Number` varchar(255),
   `Biospecimen_Group` varchar(255),
   `Biospecimen_Type` varchar(255),
   `Initial_Volume_of_Biospecimen` int,
@@ -216,9 +242,10 @@ CREATE TABLE IF NOT EXISTS `Biospecimen` (
   `Total_Cells_Automated_Count` int,
   `Viability_Automated_Count` int,
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`),
-  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_Short_Name),
-  FOREIGN KEY (Collection_Tube_Lot_Number) REFERENCES Tube (Tube_Type_Lot_Number),
-  FOREIGN KEY (Collection_Tube_Catalog_Number) REFERENCES Tube (Tube_Type_Catalog_Number)  
+  FOREIGN KEY (`Submission_CBC`) REFERENCES CBC (`CBC_ID`),
+  FOREIGN KEY (`Tube_ID`) REFERENCES Tube (`Tube_ID`)
+ # FOREIGN KEY (`Collection_Tube_Lot_Number`) REFERENCES Tube (`Tube_Type_Lot_Number`)
+  #FOREIGN KEY (`Collection_Tube_Catalog_Number`) REFERENCES Tube (`Tube_Type_Catalog_Number`)  
 );
 
 -- CREATE TABLE IF NOT EXISTS `Collection_Tube_Lot` (
@@ -232,40 +259,58 @@ CREATE TABLE IF NOT EXISTS `Biospecimen` (
 --   FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`)
 -- );
 
-CREATE TABLE IF NOT EXISTS `Equipment` (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Equipment` (
   `Equipment_ID` varchar(255)  PRIMARY KEY,
   `Equipment_Type` varchar(255),
   `Equipment_Calibration_Due_Date` date
 );
 
-CREATE TABLE IF NOT EXISTS Biospecimen_Equipment (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Biospecimen_Equipment (
    Biospecimen_Equipment_ID int PRIMARY KEY AUTO_INCREMENT,
-   Biospecimen_ID varchar(255) NOT NULL,
+   Biospecimen_IDBiospecimen_Equipment varchar(255) NOT NULL,
    Equipment_ID varchar(255) NOT NULL,
    FOREIGN KEY (Biospecimen_ID) REFERENCES Biospecimen (Biospecimen_ID),
    FOREIGN KEY (Equipment_ID) REFERENCES Equipment (Equipment_ID)
 );
 
-CREATE TABLE IF NOT EXISTS Reagent (
-  Reagent_Name_Lot_ID int AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Reagent (
+  `Reagent_Name_Lot_ID` int AUTO_INCREMENT,
   `Reagent_Lot_Number` varchar(255)  NOT NULL,
-  `Reagent_Name` varchar(255),
+  `Reagent_Name` varchar(255) NOT NULL,
   `Reagent_Catalog_Number` varchar(255),
   `Reagent_Expiration_Date` date,
-  PRIMARY KEY (Reagent_Name, `Reagent_Lot_Number`)
+  PRIMARY KEY (`Reagent_Name_Lot_ID`,`Reagent_Name`, `Reagent_Lot_Number`)
 );
 
-CREATE TABLE IF NOT EXISTS Reagent_Biospecimen (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Reagent_Biospecimen (
   Reagent_Biospecimen_ID int PRIMARY KEY AUTO_INCREMENT,
   Biospecimen_ID varchar(255) NOT NULL,
+  Reagent_Name_Lot_ID int NOT NULL,
   Reagent_Name varchar(255) NOT NULL,
   Reagent_Lot_Number varchar(255) NOT NULL,
   FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`),
-  FOREIGN KEY (Reagent_Name) REFERENCES Reagent (Reaagent_Name),
-  FOREIGN KEY (Reagent_Lot_Number) REFERENCES Reagent (Reagent_Lot_Number)
+  FOREIGN KEY (Reagent_Name_Lot_ID) REFERENCES Reagent (Reagent_Name_Lot_ID)
+#  FOREIGN KEY (Reagent_Lot_Number) REFERENCES Reagent (Reagent_Lot_Number)
 );
 
-CREATE TABLE IF NOT EXISTS `Aliquot` (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Consumable` (
+  `Consumable_Name_Lot_ID` int AUTO_INCREMENT,
+  Consumable_Name varchar(255) not null,
+  Consumable_Catalog_Number varchar(255),
+  Consumable_Lot_Number varchar(255),
+  Consumable_Expiration_Date date,
+  PRIMARY KEY (`Consumable_Name_Lot_ID`,`Consumable_Name`, `Consumable_Lot_Number`));
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Consumable_Biospecimen (
+  Consumable_Biospecimen_ID int PRIMARY KEY AUTO_INCREMENT,
+  Biospecimen_ID varchar(255) not null,
+  Consumable_Name_Lot_ID int NOT NULL,
+  Consumable_Name varchar(255) not null,
+  Consumable_Lot_Number varchar(255),
+FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`),
+FOREIGN KEY (Consumable_Name_Lot_ID) REFERENCES Consumable (Consumable_Name_Lot_ID));
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Aliquot` (   #adding shipping infomation (ID, Date, Reciept)
   `Aliquot_ID` varchar(255) PRIMARY KEY,
   `Biorepository_ID` varchar(255), -- ??
   `Biospecimen_ID` varchar(255) NOT NULL,
@@ -275,38 +320,13 @@ CREATE TABLE IF NOT EXISTS `Aliquot` (
   `Aliquot_Volume` int NOT NULL,
   `Aliquot_Units` varchar(255)  NOT NULL,
   `Aliquot_Initials` varchar(3),
-  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_Short_Name),  
-  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`),
-  FOREIGN KEY (Aliquot_Tube_Lot_Number) REFERENCES Tube (Tube_Lot_Number),
-  FOREIGN KEY (Aliquot_Tube_Catalog_Number) REFERENCES Tube (Tube_Catalog_Number)  
+  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_ID),  
+  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`)
+#  FOREIGN KEY (Aliquot_Tube_Lot_Number) REFERENCES Tube (Tube_Lot_Number),
+#  FOREIGN KEY (Aliquot_Tube_Catalog_Number) REFERENCES Tube (Tube_Catalog_Number)  
 );
 
-CREATE TABLE IF NOT EXISTS Tube (
-  Tube_ID int AUTO_INCREMENT,
-  `Tube_Type_Lot_Number` varchar(255)  NOT NULL,
-  `Tube_Type_Catalog_Number` varchar(255)  NOT NULL,
-  `Tube_Type` varchar(255),
-  `Tube_Lot_Expiration_Date` date,
-  PRIMARY KEY (Tube_Type_Lot_Number, Tube_Type_Catalog_Number)
-);
-
--- the rows in table Biospecimen_Type (Biospecimen_Type)
--- Serum
--- Plasma
--- Venous_Whole_Blood
--- Dried_Blood_Spot
--- Nasal_Swab
--- Bronchoalveolar_Lavage
--- Sputum
--- other, add a row
-
-CREATE TABLE IF NOT EXISTS Biospecimen_Type (
-  Biospecimen_Type varchar(255) PRIMARY KEY,
-  NCIT_Code varchar(255),
-  caDSR_Code varchar(255)
-);
-
-CREATE TABLE IF NOT EXISTS Assay (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Assay (
   `Assay_ID` varchar(255)  PRIMARY KEY,
   -- `Submission_CBC` varchar(255)  NOT NULL, -- table describes an assay, cbc submits an assay _result_
   `Technology_Type` varchar(255), -- vocab table?
@@ -337,7 +357,7 @@ CREATE TABLE IF NOT EXISTS Assay (
   `Assay_Target_Sub_Region` varchar(255), -- vocab
   `Assay_Antigen_Source` varchar(255),
   FOREIGN KEY (Target_Biospecimen_Type) REFERENCES Biospecimen_Type (Biospecimen_Type)
-  -- FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_Short_Name)
+  -- FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_ID)
 );
 
 -- this table looks like more metadata specific to the assay (not an assay
@@ -349,7 +369,7 @@ CREATE TABLE IF NOT EXISTS Assay (
 --   FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Metadata` (`Assay_ID`)
 -- );
 
-CREATE TABLE IF NOT EXISTS `Participant_Confirmatory_Assay_Result` (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Confirmatory_Assay_Result` (
   Participant_Confirmatory_Test_Result_ID int PRIMARY KEY AUTO_INCREMENT,
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
@@ -365,11 +385,11 @@ CREATE TABLE IF NOT EXISTS `Participant_Confirmatory_Assay_Result` (
   FOREIGN KEY (`Assay_ID`) REFERENCES Assay (`Assay_ID`)
 );
 
-CREATE TABLE IF NOT EXISTS Submission (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Submission (
   `Submission_ID` varchar(255) PRIMARY KEY,
   `Submission_Time` datetime,
   `Submission_CBC` varchar(255),
   -- `Research_Participant_ID` varchar(255) , -- guaranteed that one submission won't contain many participants' data? Doubt it.
-  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_Short_Name),
+  FOREIGN KEY (Submission_CBC) REFERENCES CBC (CBC_ID)
   -- FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)
 );
