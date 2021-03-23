@@ -393,7 +393,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Submission` (
 );
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Confirmatory_Clinical_Test` (
-`Confirmatory_clinical_test_ID` int PRIMARY KEY AUTO_INCREMENT,
+`Confirmatory_Clinical_Test_ID` int PRIMARY KEY AUTO_INCREMENT,
 `Research_Participant_ID` varchar(255) NOT NULL,
 `Assay_ID` varchar(255) NOT NULL,
 `Test_Operator_Initials` varchar(255),
