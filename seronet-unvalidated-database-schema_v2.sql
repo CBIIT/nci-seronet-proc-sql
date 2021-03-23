@@ -266,7 +266,6 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Equipment` (
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Biospecimen_Equipment` (
    `Biospecimen_Equipment_ID` int PRIMARY KEY AUTO_INCREMENT,
    `Biospecimen_ID` varchar(255) NOT NULL,
-   `Biospecimen_Equipment` varchar(255) NOT NULL,
    `Equipment_ID` varchar(255) NOT NULL,
    FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
    FOREIGN KEY (`Equipment_ID`) REFERENCES `Equipment` (`Equipment_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
@@ -393,7 +392,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Submission` (
   -- FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)
 );
 
-CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Confirmatory_clinical_test` (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Confirmatory_Clinical_Test` (
 `Confirmatory_clinical_test_ID` int PRIMARY KEY AUTO_INCREMENT,
 `Research_Participant_ID` varchar(255) NOT NULL,
 `Assay_ID` varchar(255) NOT NULL,
