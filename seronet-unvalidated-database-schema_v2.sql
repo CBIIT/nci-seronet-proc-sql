@@ -191,7 +191,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Comorbidity_Report
   `Research_Participant_ID` varchar(255)  NOT NULL,
   `Submission_CBC` varchar(255),
   `Comorbidity_Name` varchar(255) NOT NULL,
-  `ormobidity_is_Present` bool,
+  `Cormobidity_is_Present` bool,
 -- PRIMARY KEY (`Research_Participant_ID`), -- not the primary key of this table
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
