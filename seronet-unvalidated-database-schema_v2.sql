@@ -288,7 +288,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Reagent_Biospecimen` (
   `Reagent_Lot_Number` varchar(255),
   FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`Reagent_Name_Lot_ID`) REFERENCES `Reagent` (`Reagent_Name_Lot_ID`) ON DELETE CASCADE ON UPDATE CASCADE
-#  FOREIGN KEY (Reagent_Lot_Number) REFERENCES Reagent (Reagent_Lot_Number)
+-- FOREIGN KEY (Reagent_Lot_Number) REFERENCES Reagent (Reagent_Lot_Number)
 );
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Consumable` (
@@ -308,7 +308,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Consumable_Biospecimen` (
   FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`Consumable_Name_Lot_ID`) REFERENCES `Consumable` (`Consumable_Name_Lot_ID`) ON DELETE CASCADE ON UPDATE CASCADE);
 
-CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Aliquot` (   #adding shipping infomation (ID, Date, Reciept)
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Aliquot` (   -- adding shipping infomation (ID, Date, Reciept)
   `Aliquot_ID` varchar(255) PRIMARY KEY,
   `Biorepository_ID` varchar(255), -- ??
   `Biospecimen_ID` varchar(255) NOT NULL,
