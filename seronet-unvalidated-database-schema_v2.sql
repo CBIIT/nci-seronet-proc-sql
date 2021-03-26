@@ -320,8 +320,8 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Aliquot` (   #adding shipping 
   `Aliquot_Initials` varchar(3),
   FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`) ON DELETE CASCADE ON UPDATE CASCADE,  
   FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`) ON DELETE CASCADE ON UPDATE CASCADE
-#  FOREIGN KEY (Aliquot_Tube_Lot_Number) REFERENCES Tube (Tube_Lot_Number),
-#  FOREIGN KEY (Aliquot_Tube_Catalog_Number) REFERENCES Tube (Tube_Catalog_Number)  
+-- FOREIGN KEY (Aliquot_Tube_Lot_Number) REFERENCES Tube (Tube_Lot_Number),
+-- FOREIGN KEY (Aliquot_Tube_Catalog_Number) REFERENCES Tube (Tube_Catalog_Number)  
 );
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Assay` (
