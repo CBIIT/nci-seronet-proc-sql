@@ -323,7 +323,9 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Aliquot` (   -- adding shippin
 -- FOREIGN KEY (Aliquot_Tube_Lot_Number) REFERENCES Tube (Tube_Lot_Number),
 -- FOREIGN KEY (Aliquot_Tube_Catalog_Number) REFERENCES Tube (Tube_Catalog_Number)  
 );
-
+-- Assay table has two issues that need to be resolved. 
+-- (1) Assay_ID can not be the primary key because one Assay_ID can has serval Target_Biospecimen_Type. I suggest we add Target_Biospecimen_Type in and make a new composition primary key, but we also need to consider that Target_Biospecimen_Type is also a foreign key.
+-- (2) Assay table has columns(like Assay_Target, Assay_Target_Sub_Region, Assay_Antigen_Source) that are coming from another csv files, assay_target.csv. 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Assay` (
   `Assay_ID` varchar(255)  PRIMARY KEY,
   -- `Submission_CBC` varchar(255)  NOT NULL, -- table describes an assay, cbc submits an assay _result_
