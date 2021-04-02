@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_Test_Result`
   `Test_Result_Provenance` varchar(255), -- vocab
   `Date_of_Sample_Collection` date NOT NULL,
   `Date_Test_Performed` date NOT NULL,
-  `Sample_Type` varchar(255) NOT NULL,
+  -- `Sample_Type` varchar(255) NOT NULL,
   --  `Date_of_SARS_CoV_2_PCR_Test_Diagnosis` date, -- not here
   -- `Current_CMV_infection` varchar(25), -- not here
   -- `Duration_of_CMV_infection` int, -- not here
@@ -108,8 +108,8 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_Test_Result`
   -- PRIMARY KEY (`Research_Participant_ID`), -- is not the primary key, one participant may have many tests
   FOREIGN KEY (`Test_Name`) REFERENCES `Clinical_Test` (`Test_Name`)  ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`Sample_Type`) REFERENCES `Biospecimen_Type` (`Biospecimen_Type`)  ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
+  -- FOREIGN KEY (`Sample_Type`) REFERENCES `Biospecimen_Type` (`Biospecimen_Type`)  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Prior_Covid_Outcome` (
