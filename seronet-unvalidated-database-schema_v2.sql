@@ -115,10 +115,10 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_Test_Result`
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Prior_Covid_Outcome` (
   `Research_Participant_ID` varchar(255)  NOT NULL,
   `Submission_CBC` varchar(255) ,
-  `Symptomatic` bool,
-  `Date_of_Symptoms_Onset` date, -- associate with the symptom in symptom linking table
-  `Symptoms_Resolved` bool,
-  `Date_of_Symptoms_Resolution` date,
+  `Is_Symptomatic` TINYINT(1),
+  `Date_of_Symptom_Onset` date, -- associate with the symptom in symptom linking table
+  `Symptoms_Resolved` TINYINT(1),
+  `Date_of_Symptom_Resolution` date,
   `Covid_Disease_Severity` int, -- vocab table
   -- PRIMARY KEY (`Research_Participant_ID`), -- is not primary key (multiple outcomes for a single patient possible
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Covid_Symptom_Repo
   `Research_Participant_ID` varchar(255)  NOT NULL,
   `Symptom_Name` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255)  NOT NULL,
-  `Symptom_is_Present` bool, -- if NULL, no data or NA
+  `Symptom_is_Present` TINYINT(1), -- if NULL, no data or NA
 
   -- PRIMARY KEY (`Research_Participant_ID`), -- this is a linking (many-to-many) table, each row is a unique entity
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
