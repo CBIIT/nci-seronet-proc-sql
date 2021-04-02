@@ -89,8 +89,8 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_Test_Result`
   `Submission_CBC` varchar(255) NOT NULL,
   `Test_Result` varchar(255) NOT NULL, -- vocab
   `Test_Result_Provenance` varchar(255), -- vocab
-  `Date_of_Sample_Collection` date NOT NULL,
-  `Date_Test_Performed` date NOT NULL,
+  `Date_of_Sample_Collection` date,
+  `Date_Test_Performed` date,
   -- `Sample_Type` varchar(255) NOT NULL,
   --  `Date_of_SARS_CoV_2_PCR_Test_Diagnosis` date, -- not here
   -- `Current_CMV_infection` varchar(25), -- not here
