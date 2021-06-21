@@ -1,0 +1,31 @@
+drop table if exists `seronetdb-Validated`.Aliquot;
+
+drop table if exists `seronetdb-Validated`.Reagent_Biospecimen;
+drop table if exists `seronetdb-Validated`.Reagent;
+
+drop table if exists `seronetdb-Validated`.Biospecimen_Equipment;
+drop table if exists `seronetdb-Validated`.Equipment;
+
+drop table if exists `seronetdb-Validated`.Consumable_Biospecimen;
+drop table if exists `seronetdb-Validated`.Consumable;
+
+drop table if exists `seronetdb-Validated`.Prior_Covid_Outcome;
+drop table if exists `seronetdb-Validated`.Participant_Prior_SARS_CoV2_PCR;
+drop table if exists `seronetdb-Validated`.Participant_Prior_Test_Result;
+drop table if exists `seronetdb-Validated`.Participant_Prior_Infection_Reported;
+drop table if exists `seronetdb-Validated`.Participant_Confirmatory_Assay_Result;
+drop table if exists `seronetdb-Validated`.Participant_Comorbidity_Reported;
+drop table if exists `seronetdb-Validated`.Confirmatory_Clinical_Test;
+drop table if exists `seronetdb-Validated`.Participant_Covid_Symptom_Reported;
+
+drop table if exists `seronetdb-Validated`.`Assay_Bio_Target`;
+drop table if exists `seronetdb-Validated`.`Assay_Target_Antigen`;
+drop table if exists `seronetdb-Validated`.`Assay_Calibration`;
+drop table if exists `seronetdb-Validated`.`Assay_Quality_Controls`;
+drop table if exists `seronetdb-Validated`.`Assay`;
+
+
+drop table if exists `seronetdb-Validated`.Biospecimen;
+drop table if exists `seronetdb-Validated`.Participant;
+drop table if exists `seronetdb-Validated`.Tube;
+drop table if exists `seronetdb-Validated`.Submission;
