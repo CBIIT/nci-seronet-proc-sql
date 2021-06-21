@@ -1,290 +1,392 @@
-drop table if exists `seronetdb-prevalidated`.`Seronet_CBC_ID`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Seronet_CBC_ID` (
-	`Org_ID` int primary key not null,
-    `Institution` varchar(255));
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`CBC` (
+  `CBC_ID` varchar(255) PRIMARY KEY,
+  `CBC_Name` varchar(255) NOT NULL
+);
 
-drop table if exists `seronetdb-prevalidated`.`Consumable`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Consumable` (
-`Biospecimen_ID` varchar(255) not null,
-`Consumable_Name` varchar(255) not null,
-`Consumable_Catalog_Number` varchar(255),
-`Consumable_Lot_Number` varchar(255),
-`Consumable_Expiration_Date` date,
-PRIMARY KEY (`Biospecimen_ID`,`Consumable_Name`),
-FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`));
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Submission` (
+  `Submission_Index` int PRIMARY KEY AUTO_INCREMENT,
+  `Submission_CBC_Name` varchar(255),
+  `Submission_CBC_ID` varchar(255),
+  `Submission_Time` datetime,
+  `Submission_File_Name` varchar(255),
+  `Date_Submission_Validated` datetime,
+  -- `Research_Participant_ID` varchar(255) , -- guaranteed that one submission won't contain many participants' data? Doubt it.
+  FOREIGN KEY (`Submission_CBC_ID`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
+  -- FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)
+);
 
-drop table if exists `seronetdb-prevalidated`.`Demographic_Data`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Demographic_Data` (
-  `Research_Participant_ID` varchar(255) NOT NULL,
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Participant (
+  `Research_Participant_ID` varchar(255)  NOT NULL,
   `Submission_CBC` varchar(255),
+  `Submission_Index` int,
   `Age` int,
   `Race` varchar(255),
   `Ethnicity` varchar(255),
   `Gender` varchar(255),
-  PRIMARY KEY (`Research_Participant_ID`));
-
-drop table if exists `seronetdb-prevalidated`.`Prior_Test_Result`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Prior_Test_Result` (
-  `Research_Participant_ID` varchar(255) NOT NULL,
-  `Submission_CBC` varchar(255),
-  `SARS_CoV_2_PCR_Test_Result` varchar(255),
-  `SARS_CoV_2_PCR_Test_Result_Provenance` varchar(255),
-  `Date_of_SARS_CoV_2_PCR_sample_collection` date,
-  `Date_of_SARS_CoV_2_PCR_Test_Diagnosis` date,
-  `CMV_Serology_Test_Result` varchar(255),
-  `CMV_Serology_Test_Result_Provenance` varchar(255),
-  `Date_of_CMV_Serology_Test` date,
-  `CMV_Molecular_Test_Result` varchar(255),
-  `CMV_Molecular_Test_Result_Provenance` varchar(255),
-  `Date_of_CMV_Molecular_Test` date,
-  `Current_CMV_infection` varchar(25),
-  `Duration_of_CMV_infection` int,
-  `HepB_sAg_Test_Result` varchar(255),
-  `HepB_sAg_Test_Result_Provenance` varchar(255),
-  `Date_of_HepB_sAg_Test` date,
-  `HepB_Serology_Test_Result` varchar(255),
-  `HepB_Serology_Test_Result_Provenance` varchar(255),
-  `Date_of_HepB_Serology_Test` date,
-  `Current_HepB_infection` varchar(255),
-  `Duration_of_HepB_infection` int,
-  `EBV_Molecular_Test_Result` varchar(255),
-  `EBV_Molecular_Test_Result_Provenance` varchar(255),
-  `Date_of_EBV_Molecular_Test` date,
-  `EBV_Serology_Test_Result` varchar(255),
-  `EBV_Serology_Test_Result_Provenance` varchar(255),
-  `Date_of_EBV_Serology_Test` date,
-  `Current_EBV_infection` varchar(255),
-  `Duration_of_EBV_infection` int,
-  `HIV_Molecular_Test_Result` varchar(255),
-  `HIV_Molecular_Test_Result_Provenance` varchar(255),
-  `Date_of_HIV_Molecular_Test` date,
-  `HIV_Serology_Test_Result` varchar(255),
-  `HIV_Serology_Test_Result_Provenance` varchar(255),
-  `Date_of_HIV_Serology_Test` date,
-  `Current_HIV_infection` varchar(255),
-  `Duration_of_HIV_infection` int,
-  `On_HAART_Therapy` varchar(255),
-  `Duration_of_HAART_Therapy` int,
-  `Seasonal_Coronavirus_Molecular_Result` varchar(255),
-  `Seasonal_Coronavirus_Molecular_Test_Result_Provenance` varchar(255),
-  `Date_of_Seasonal_Coronavirus_Molecular_Test` date,
-  `Seasonal_Coronavirus_Serology_Result` varchar(255),
-  `Seasonal_Coronavirus_Serology_Test_Result_Provenance` varchar(255),
-  `Date_of_Seasonal_Coronavirus_Serology_Test` date,
-  `Current_Seasonal_Coronavirus_infection` varchar(255),
-  `Duration_of_Seasonal_Coronavirus_infection` int,
   PRIMARY KEY (`Research_Participant_ID`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`));
+  FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Submission_Index`) REFERENCES `Submission` (`Submission_Index`) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
-drop table if exists `seronetdb-prevalidated`.`Prior_Covid_Outcome`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Prior_Covid_Outcome` (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Clinical_Test` (
+    `Test_Name` varchar(255) PRIMARY KEY,
+    `NCIT_Code` varchar(255),
+    `caDSR_Code` varchar(255)
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Infection` (
+    `Infectious_Agent` varchar(255) PRIMARY KEY,
+    `NCIT_Code` varchar(255),
+    `caDSR_Code` varchar(255)
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_SARS_CoV2_PCR` (
+	`Research_Participant_ID` varchar(255) primary key,
+	`Submission_CBC` varchar(255) NOT NULL,
+    `Test_Result` varchar(255) NOT NULL, -- vocab
+	`Test_Result_Provenance` varchar(255), -- vocab
+	`Date_of_Sample_Collection` date,
+    `Date_of_Diagnosis` date
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_Infection_Reported` (
+    `Participant_Prior_Infection_ID` int AUTO_INCREMENT PRIMARY KEY,
+    `Research_Participant_ID` varchar(255) NOT NULL,
+    `Infectious_Agent` varchar(255) NOT NULL,
+    `Submission_CBC` varchar(255) NOT NULL,
+ --   `Date_of_Diagnosis` date,  	-- only applicable to SARS-CoV-2
+    `Duration_of_Infection` int,
+    `Duration_of_Infection_Unit` varchar(255),
+    -- `Date_of_Report` date,
+    `Current_Infection` bool,
+    `Duration_of_HAART_Therapy` int,
+    `On_HAART_Therapy` bool,
+    FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`Infectious_Agent`) REFERENCES `Infection` (`Infectious_Agent`)  ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Biospecimen_Type` (
+  `Biospecimen_Type` varchar(255) PRIMARY KEY,
+  `NCIT_Code` varchar(255),
+  `caDSR_Code` varchar(255)
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_Test_Result` (  -- non SARS-CoV-2 priors
+  `Participant_Prior_Test_Result_ID` int PRIMARY KEY AUTO_INCREMENT,
   `Research_Participant_ID` varchar(255) NOT NULL,
-  `Submission_CBC` varchar(255),
-  `Is_Symptomatic` varchar(25),
-  `Date_of_Symptom_Onset` date,
-  `Symptoms_Resolved` varchar(25),
+  `Test_Name` varchar(255) NOT NULL,
+  `Submission_CBC` varchar(255) NOT NULL,
+  `Test_Result` varchar(255) NOT NULL, -- vocab
+  `Test_Result_Provenance` varchar(255), -- vocab
+  -- `Date_of_Sample_Collection` date, -- only applicable to SARS CoV-2
+  `Date_Test_Performed` date,  -- date of test
+  FOREIGN KEY (`Test_Name`) REFERENCES `Clinical_Test` (`Test_Name`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Prior_Covid_Outcome` (
+  `Research_Participant_ID` varchar(255)  NOT NULL,
+  `Submission_CBC` varchar(255) ,
+  `Is_Symptomatic` TINYINT(1),
+  `Date_of_Symptom_Onset` date, -- associate with the symptom in symptom linking table
+  `Symptoms_Resolved` TINYINT(1),
   `Date_of_Symptom_Resolution` date,
-  `Covid_Disease_Severity` int,
+  `Covid_Disease_Severity` int, -- vocab table
   PRIMARY KEY (`Research_Participant_ID`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`));
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
+);
 
-drop table if exists `seronetdb-prevalidated`.`Covid_Symptom`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Covid_Symptom` (
-  `Research_Participant_ID` varchar(255) NOT NULL,
-  `Submission_CBC` varchar(255),
-  `Fever` varchar(25),
-  `Temperature_over_100` varchar(25),
-  `Chills` varchar(25),
-  `Rigors` varchar(25),
-  `Muscle_ache` varchar(25),
-  `Runny_nose` varchar(25),
-  `Sore_throat` varchar(25),
-  `New_Olfactory_and_Taste_Disorder` varchar(25),
-  `Headache` varchar(25),
-  `Fatigue` varchar(25),
-  `Cough` varchar(25),
-  `Wheezing` varchar(25),
-  `Shortness_of_breath` varchar(25),
-  `Difficulty_breathing` varchar(25),
-  `Chest_pain` varchar(25),
-  `Nausea_or_vomiting` varchar(25),
-  `Abdominal_pain` varchar(25),
-  `Diarrhea` varchar(25),
-  `Other_Symptom` varchar(25),
-  PRIMARY KEY (`Research_Participant_ID`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`));
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Symptom` (
+   `Symptom_Name` varchar(255) PRIMARY KEY,
+   `NCIT_Code` varchar(255),
+   `caDSR_Code` varchar(255)
+   );
 
-drop table if exists `seronetdb-prevalidated`.`Comorbidity`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Comorbidity` (
-  `Research_Participant_ID` varchar(255) NOT NULL,
-  `Submission_CBC` varchar(255),
-  `Diabetes_Mellitus` varchar(25),
-  `Hypertension` varchar(25),
-  `Severe_Obesity` varchar(25),
-  `Cardiovascular_Disease` varchar(25),
-  `Chronic_Renal_Disease` varchar(25),
-  `Chronic_Liver_Disease` varchar(25),
-  `Chronic_Lung_Disease` varchar(25),
-  `Immunosuppressive_conditions` varchar(25),
-  `Autoimmune_condition` varchar(25),
-  `Inflammatory_Disease` varchar(25),
-  `Other_Comorbidity` varchar(255),
-  PRIMARY KEY (`Research_Participant_ID`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`));
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Covid_Symptom_Reported` (
+  `Participant_Covid_Symptom_Reported_ID` int PRIMARY KEY AUTO_INCREMENT,
+  `Research_Participant_ID` varchar(255)  NOT NULL,
+  `Symptom_Name` varchar(255) NOT NULL,
+  `Submission_CBC` varchar(255)  NOT NULL,
+  `Symptom_is_Present` TINYINT(1), -- if NULL, no data or NA
 
-drop table if exists `seronetdb-prevalidated`.`Biospecimen`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Biospecimen` (
-  `Biospecimen_ID` varchar(255) NOT NULL,
-  `Research_Participant_ID` varchar(255),
-  `Test_Agreement` varchar(255),
+  -- PRIMARY KEY (`Research_Participant_ID`), -- this is a linking (many-to-many) table, each row is a unique entity
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Symptom_Name`) REFERENCES `Symptom` (`Symptom_Name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Comorbidity` (
+  `Comorbidity_Name` varchar(255) PRIMARY KEY,
+  `NCIT_Code` varchar(255),
+  `caDSR_Code` varchar(255)
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Comorbidity_Reported` (
+  `Participant_Comorbidity_Reported_ID` int PRIMARY KEY AUTO_INCREMENT,
+  `Research_Participant_ID` varchar(255)  NOT NULL,
   `Submission_CBC` varchar(255),
-  `Shipping_ID` varchar(255),
+  `Comorbidity_Name` varchar(255) NOT NULL,
+  `Cormobidity_is_Present` bool,
+-- PRIMARY KEY (`Research_Participant_ID`), -- not the primary key of this table
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Tube` (
+  `Tube_ID` int AUTO_INCREMENT,
+  `Tube_Used_For` varchar(255) NOT NULL,
+  `Tube_Type_Lot_Number` varchar(255)  NOT NULL,
+  `Tube_Type_Catalog_Number` varchar(255)  NOT NULL,
+  `Tube_Type` varchar(255),
+  `Tube_Lot_Expiration_Date` date,
+  PRIMARY KEY (`Tube_ID`)
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Biospecimen` (
+  `Biospecimen_ID` varchar(255)  PRIMARY KEY,
+  `Research_Participant_ID` varchar(255)  NOT NULL,
+  `Test_Agreement` varchar(255), -- ?
+  `Submission_CBC` varchar(255),
+ -- `Shipping_ID` varchar(255),
+  `Biospecimen_Tube_ID` int,
+--  `Collection_Tube_Lot_Number` varchar(255),
+--  `Collection_Tube_Catalog_Number` varchar(255),
   `Biospecimen_Group` varchar(255),
   `Biospecimen_Type` varchar(255),
-  `Initial_Volume_of_Biospecimen` float,
+  `Initial_Volume_of_Biospecimen` int,
   `Biospecimen_Collection_Company_Clinic` varchar(255),
-  `Biospecimen_Collector_Initials` varchar(3),
-  `Date_of_Biospecimen_Collection` Date,
+  `Biospecimen_Collector_Initials` varchar(10),
+  `Date_of_Biospecimen_Collection` date,
   `Time_of_Biospecimen_Collection` time,
-  `Biospecimen_Processing_Company_Clinic` varchar(255),
+  `Biospecimen_Processing_Company_Clinic` varchar(255) ,
   `Biospecimen_Processor_Initials` varchar(3),
-  `Date_of_Biospecimen_Processing` Date,
-  `Time_of_Biospecimen_Receipt` time,
-  `Storage_Start_Time_80_LN2_storage` datetime,
+  `Date_of_Biospecimen_Processing` date,
+  `Time_of_Biospecimen_Receipt` time, 
+  `Storage_Start_Time_80_LN2_storage` time,
   `Storage_Time_at_2_8` float,
-  `Storage_Start_Time_at_2_8` datetime,
+  `Storage_Start_Time_at_2_8` timestamp,
   `Storage_Start_Time_at_2_8_Initials` varchar(3),
-  `Storage_End_Time_at_2_8` datetime,
+  `Storage_End_Time_at_2_8` timestamp,
   `Storage_End_Time_at_2_8_Initials` varchar(3),
   `Centrifugation_Time` float,
   `RT_Serum_Clotting_Time` float,
-  `Final_Concentration_of_Biospecimen` float,
-  `Live_Cells_Hemocytometer_Count` float,
-  `Total_Cells_Hemocytometer_Count` float,
+--  `Final_Concentration_of_Biospecimen` int,
+  `Live_Cells_Hemocytometer_Count` int,
+  `Total_Cells_Hemocytometer_Count` int,
   `Viability_Hemocytometer_Count` float,
-  `Live_Cells_Automated_Count` float,
-  `Total_Cells_Automated_Count` float,
+  `Live_Cells_Automated_Count` int,
+  `Total_Cells_Automated_Count` int,
   `Viability_Automated_Count` float,
-  PRIMARY KEY (`Biospecimen_ID`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`));
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Submission_CBC`) REFERENCES CBC (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Biospecimen_Tube_ID`) REFERENCES `Tube` (`Tube_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
+);
 
-drop table if exists `seronetdb-prevalidated`.`Collection_Tube`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Collection_Tube` (
-  `Collection_Tube_Type_Lot_Number` varchar(255) NOT NULL,
-  `Biospecimen_ID` varchar(255),
-  `Collection_Tube_Type` varchar(255),
-  `Collection_Tube_Type_Catalog_Number` varchar(255),
-  `Collection_Tube_Type_Expiration_Date` date,
-  PRIMARY KEY (`Collection_Tube_Type_Lot_Number`, `Biospecimen_ID`),
-  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`));
-
-drop table if exists `seronetdb-prevalidated`.`Equipment`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Equipment` (
-  `Equipment_ID` varchar(255) NOT NULL,
-  `Biospecimen_ID` varchar(255) NOT NULL,
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Equipment` (
+  `Equipment_ID` varchar(255),
   `Equipment_Type` varchar(255),
   `Equipment_Calibration_Due_Date` date,
-  PRIMARY KEY (`Equipment_ID`, `Biospecimen_ID`),
-  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`));
+  PRIMARY KEY(`Equipment_ID`,  `Equipment_Type`,  `Equipment_Calibration_Due_Date`)
+);
 
-drop table if exists `seronetdb-prevalidated`.`Reagent`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Reagent` (
-  `Reagent_Lot_Number` varchar(255) NOT NULL,
-  `Biospecimen_ID` varchar(255) NOT NULL,
-  `Reagent_Name` varchar(255),
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Biospecimen_Equipment` (
+   `Biospecimen_Equipment_ID` int PRIMARY KEY AUTO_INCREMENT,
+   `Biospecimen_ID` varchar(255) NOT NULL,
+   `Equipment_ID` varchar(255) NOT NULL,
+   FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
+   FOREIGN KEY (`Equipment_ID`) REFERENCES `Equipment` (`Equipment_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Reagent` (
+  `Reagent_Name_Lot_ID` int AUTO_INCREMENT,
+  `Reagent_Lot_Number` varchar(255),
+  `Reagent_Name` varchar(255) NOT NULL,
   `Reagent_Catalog_Number` varchar(255),
   `Reagent_Expiration_Date` date,
-  PRIMARY KEY (`Reagent_Lot_Number`, `Biospecimen_ID`),
-  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`));
+  PRIMARY KEY (`Reagent_Name_Lot_ID`,`Reagent_Name`, `Reagent_Lot_Number`)
+);
 
-drop table if exists `seronetdb-prevalidated`.`Aliquot`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Aliquot` (
-  `Aliquot_ID` varchar(255) NOT NULL,
-  `Biorepository_ID` varchar(255),
-  `Biospecimen_ID` varchar(255),
-  `Submission_CBC` varchar(255),
-  `Aliquot_Volume` int,
-  `Aliquot_Units` varchar(255),
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Reagent_Biospecimen` (
+  `Reagent_Biospecimen_ID` int PRIMARY KEY AUTO_INCREMENT,
+  `Biospecimen_ID` varchar(255) NOT NULL,
+  `Reagent_Name_Lot_ID` int NOT NULL,
+  `Reagent_Name` varchar(255) NOT NULL,
+  `Reagent_Lot_Number` varchar(255),
+  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Reagent_Name_Lot_ID`) REFERENCES `Reagent` (`Reagent_Name_Lot_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+-- FOREIGN KEY (Reagent_Lot_Number) REFERENCES Reagent (Reagent_Lot_Number)
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Consumable` (
+  `Consumable_Name_Lot_ID` int AUTO_INCREMENT,
+  `Consumable_Name` varchar(255) not null,
+  `Consumable_Catalog_Number` varchar(255),
+  `Consumable_Lot_Number` varchar(255),
+  `Consumable_Expiration_Date` date,
+  PRIMARY KEY (`Consumable_Name_Lot_ID`,`Consumable_Name`, `Consumable_Lot_Number`));
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Consumable_Biospecimen` (
+  `Consumable_Biospecimen_ID` int PRIMARY KEY AUTO_INCREMENT,
+  `Biospecimen_ID` varchar(255) not null,
+  `Consumable_Name_Lot_ID` int NOT NULL,
+  `Consumable_Name` varchar(255) not null,
+  `Consumable_Lot_Number` varchar(255),
+  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Consumable_Name_Lot_ID`) REFERENCES `Consumable` (`Consumable_Name_Lot_ID`) ON DELETE CASCADE ON UPDATE CASCADE);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Aliquot` (   -- adding shipping infomation (ID, Date, Reciept)
+  `Aliquot_ID` varchar(255) PRIMARY KEY,
+  `Biorepository_ID` varchar(255), -- ??
+  `Biospecimen_ID` varchar(255) NOT NULL,
+  `Submission_CBC` varchar(255) NOT NULL,
+  `Aliquot_Tube_ID` int,
+--  `Aliquot_Tube_Catalog_Number` varchar(255),
+  `Aliquot_Concentration` float,
+  `Aliquot_Volume` int NOT NULL,
+  `Aliquot_Units` varchar(255)  NOT NULL,
   `Aliquot_Initials` varchar(3),
-  PRIMARY KEY (`Aliquot_ID`),
-  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`));
+  FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`) ON DELETE CASCADE ON UPDATE CASCADE,  
+  FOREIGN KEY (`Biospecimen_ID`) REFERENCES `Biospecimen` (`Biospecimen_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Aliquot_Tube_ID`) REFERENCES `Tube` (`Tube_ID`) 
+);
+ 
 
-drop table if exists `seronetdb-prevalidated`.`Aliquot_Tube`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Aliquot_Tube` (
-  `Aliquot_Tube_Type_Lot_Number` varchar(255) NOT NULL,
-  `Aliquot_Tube_Type` varchar(255),
-  `Aliquot_Tube_Type_Catalog_Number` varchar(255),
-  `Aliquot_Tube_Type_Expiration_Date` date,
-  `Aliquot_ID` varchar(255) NOT NULL,
-  PRIMARY KEY (`Aliquot_Tube_Type_Lot_Number`, `Aliquot_ID`),
-  FOREIGN KEY (`Aliquot_ID`) REFERENCES `Aliquot` (`Aliquot_ID`));
-
-drop table if exists `seronetdb-prevalidated`.`Assay_Metadata`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Assay_Metadata` (
-  `Assay_ID` varchar(255) NOT NULL,
-  `Submission_CBC` varchar(255),
-  `Technology_Type` varchar(255),
-  `Assay_Name` varchar(255),
-  `Assay_Manufacturer` varchar(255),
-  `EUA_Status` varchar(255),
-  `Assay_Multiplicity` varchar(255),
-  `Target_Organism` varchar(255),
-  `Target_biospecimen_is_Serum` boolean,
-  `Target_biospecimen_is_Plasma` boolean,
-  `Target_biospecimen_is_Venous_Whole_Blood` boolean,
-  `Target_biospecimen_is_Dried_Blood_Spot` boolean,
-  `Target_biospecimen_is_Nasal_Swab` boolean,
-  `Target_biospecimen_is_Bronchoalveolar_Lavage` boolean,
-  `Target_biospecimen_is_Sputum` boolean,
-  `Assay_Control_Type` varchar(255),
-  `Postive_Control` varchar(255),
-  `Negative_Control` varchar(255),
-  `Calibration_Type` varchar(255),
-  `Calibrator_High_or_Positive` varchar(255),
-  `Calibrator_Low_or_Negative` varchar(255),
-  `Measurand_Antibody_Type` varchar(255),
-  `Assay_Result_Type` varchar(255),
-  `Assay_Result_Unit` varchar(255),
-  `Positive_Cut_Off_Threshold` varchar(255),
-  `Negative_Cut_Off_Ceiling` varchar(255),
-  `Cut_Off_Unit` varchar(255),
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Assay_Metadata` (
+  `Assay_ID` varchar(255),
+  `Technology_Type` varchar(255), -- vocab table?
+  `Assay_Name` varchar(255)  NOT NULL, -- removed unique, added in target bio type as key 		
+  `Assay_Manufacturer` varchar(255)  NOT NULL,
+  `EUA_Status` varchar(255), -- vocab table
+  `Assay_Multiplicity` varchar(255), -- ??
+  `Developer_Substrate` varchar(255),
+  `Developer_Substrate_Manufacturer` varchar(255),
+  `Platform` varchar(255),
+  `Platform Manufacturer` varchar(255),
+  `Analysis Software` varchar(255),
+  `Target_Organism` varchar(255) NOT NULL, -- vocab
+  primary key (`Assay_ID`,  `Target_Organism`)
+  );
+  
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Assay_Calibration`(
+  `Assay_ID` varchar(255),
+  `Calibration_Type` varchar(255), -- vocab
+  `Calibrator_High_or_Positive` varchar(255), -- bool?
+  `Calibrator_Low_or_Negative` varchar(255), -- bool?
+  `Standard Source` varchar(255),
+  `Standard Concentration Upper` varchar(255),
+  `Standard Concentration Lower` varchar(255),
+  `Standard Concentration Units` varchar(255),
+  `Standard Curve Diluent` varchar(255),
+  `Standard Curve Dilution Value` varchar(255),
+  `Number of Standard Diltions` varchar(255),
   `N_true_positive` int,
   `N_true_negative` int,
   `N_false_positive` int,
   `N_false_negative` int,
-  `Peformance_Statistics_Source` varchar(255),
-  PRIMARY KEY (`Assay_ID`));
-
-drop table if exists `seronetdb-prevalidated`.`Assay_Target`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Assay_Target` (
-  `Assay_ID` varchar(255) NOT NULL,
-  `Assay_Target` varchar(255) NOT NULL,
-  `Assay_Target_Sub_Region` varchar(255),
+  `Peformance_Statistics_Source` varchar(255), -- vocab
+  `Number of Samples Per Plate` int,
+  `Number of Sample Diltuions` int,
+  `Sample Dilution Value` varchar(255),
+  `Testing Format` varchar(255),
+  `Starting Sample Diltuion` varchar(255),
+  primary key (`Assay_ID`),
+  FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Metadata` (`Assay_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+  );
+  
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Assay_Target_Antigen`(
+  `Assay_ID` varchar(255),
+  `Target_Organism` varchar(255) NOT NULL, -- vocab
+  `Assay_Target_Antigen` varchar(255) NOT NULL, -- vocab
+  `Assay_Target_Sub_Region` varchar(255), -- vocab
+  `Measurand_Antibody_Type` varchar(255), -- vocab
+  `Assay_Result_Type` varchar(255), -- vocab
+  `Assay_Result_Unit` varchar(255), -- vocab
+  `Positive_Cut_Off_Threshold` varchar(255), -- string value??
+  `Negative_Cut_Off_Ceiling` varchar(255), -- string value??
+  `Cut_Off_Unit` varchar(255), -- vocab
+  `Low_Positive_Lower_Limit` int,
+  `Low_Positive_Upper_Limit` int,
+  `Medium_Positive_Lower_Limit` int,
+  `Medium_Positive_Upper_Limit` int,
+  `High_Positive_Lower_Limit` int,
+  `High_Positive_Upper_Limit` int,
   `Assay_Antigen_Source` varchar(255),
-  PRIMARY KEY (`Assay_ID`, `Assay_Target`),
-  FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Metadata` (`Assay_ID`));
+  `Assay_Antigen_Method_Of_Production` varchar(255),
+  `Plasmid_Description` varchar(255),
+  primary key (`Assay_ID`, `Target_Organism`, `Assay_Target_Antigen`),
+  FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Metadata` (`Assay_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+  --  FOREIGN KEY (`Target_Organism`) REFERENCES `Assay_Metadata` (`Target_Organism`) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
-drop table if exists `seronetdb-prevalidated`.`Confirmatory_Test_Result`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Confirmatory_Test_Result` (
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Assay_Bio_Target` (
+	`Assay_Bio_Target_Index` int PRIMARY KEY AUTO_INCREMENT,
+	`Assay_ID` varchar(255),
+    `Target_Biospecimen_Type` varchar(255),
+    `Is_Present` varchar(255),  -- Yes
+	FOREIGN KEY (`Target_Biospecimen_Type`) REFERENCES `Biospecimen_Type` (`Biospecimen_Type`) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Metadata` (`Assay_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    );
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Assay_Quality_Controls` (
+	`Assay_QC_Index` int PRIMARY KEY AUTO_INCREMENT,
+	`Assay_ID` varchar(255),
+    `Quality_Control_Name` varchar(255),
+    `Quality_Control_Source` varchar(255),
+    `Quality_Control` varchar(255),
+    `Quality_Control_Type` varchar(255),    
+	FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Metadata` (`Assay_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    );
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Assay_Organism_Conversion` (
+	`Assay_Organism_Index` int PRIMARY KEY AUTO_INCREMENT,
+    `CBC_Name` varchar(255),
+	`Assay_ID` varchar(255),
+    
+	FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Metadata` (`Assay_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    );
+
+
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Confirmatory_Assay_Result` (
+  `Participant_Confirmatory_Test_Result_ID` int PRIMARY KEY AUTO_INCREMENT,
   `Research_Participant_ID` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255),
   `Assay_ID` varchar(255) NOT NULL,
-  `Assay_Target` varchar(255) NOT NULL,
+  -- `Assay_Target` varchar(255)  NOT NULL, -- in the assay record now
   `Assay_Kit_Lot_Number` varchar(255),
   `Assay_Result` varchar(255),
-  `Assay_Replicate` int,
-  `Date_of_Test` date,
-  `Test_Operator_Initials` varchar(255),
-  PRIMARY KEY (`Research_Participant_ID`, `Assay_ID`, `Assay_Target`),
-  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`),
-  FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Target` (`Assay_ID`));
+  `Assay_Replicate` int, -- ??
+  `Date_of_Assay_Run` date,
+  `Assay_Operator_Initials` varchar(255),
+  -- PRIMARY KEY (`Research_Participant_ID`, `Assay_ID`, `Assay_Target`), -- not the primary key; a participant may have a number of results based on the same asay
+  FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Assay_ID`) REFERENCES `Assay_Metadata` (`Assay_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
-drop table if exists `seronetdb-prevalidated`.`Submission_MetaData`;
-CREATE TABLE IF NOT EXISTS `seronetdb-prevalidated`.`Submission_MetaData` (
-  `Submission_ID` int not null  Auto_Increment,
-  `Submission_time` datetime,
-  `Submission_CBC` varchar(255),
-  `Research_Participant_ID` varchar(255),
-   PRIMARY KEY (`Submission_ID`),
-   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Demographic_Data` (`Research_Participant_ID`))
-   AUTO_INCREMENT = 100;
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Confirmatory_Clinical_Test` (
+`Confirmatory_Clinical_Test_ID` int PRIMARY KEY AUTO_INCREMENT,
+`Research_Participant_ID` varchar(255) NOT NULL,
+`Assay_ID` varchar(255) NOT NULL,
+`Instrument_ID` varchar(255),
+`Test_Operator_Initials` varchar(255),
+`Assay_Kit_Lot_Number` varchar(255),
+`Date_of_Test` date,
+`Time_of_Test` time,
+`Assay_Target` varchar(255),
+`Assay_Target_Sub_Region` varchar(255),
+`Measurand_Antibody` varchar(255),
+`Assay_Replicate` int,
+`Sample_Type` varchar(255),
+`Sample_Dilution` int,
+`Interpretation` varchar(255),
+`Derived_Result` float,
+`Derived_Result_Units` varchar(255),
+`Raw_Result` float,
+`Raw_Result_Units` varchar(255),
+`Positive_Control_Reading` float,
+`Negative_Control_Reading` float,
+FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (Assay_ID) REFERENCES Assay_Metadata (Assay_ID) ON DELETE CASCADE ON UPDATE CASCADE);
