@@ -533,3 +533,20 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Updated_Submissions`(
   `Date_Submission_Updated` datetime,
   `Update_Status` varchar(255)
 );
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`CDC_Confrimation_Results`(
+	`Patient ID` varchar(255),
+    `BSI_Parent_ID` varchar(255) NOT NULL,
+    `Measurand_Antibody` varchar(255),
+    `Assay_Units` varchar(255),
+	`SARS-CoV-2 Nucleocapsid` float,
+	`SARS-CoV-2 S1 RBD` float,
+	`SARS-CoV-2 Spike` float,
+    primary key(`Patient ID`, `Measurand_Antibody`),
+	FOREIGN KEY (`BSI_Parent_ID`) REFERENCES BSI_Parent_Aliquots (`Biorepository_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`CDC_Confrimation_Cutoffs`(
+	`Sub Region` varchar(255) primary key,
+	`Antibody` varchar(255),  -- IgG, IgM
+	`Cut_off` float
+);
