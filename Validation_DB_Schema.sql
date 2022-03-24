@@ -4,16 +4,16 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`CBC` (
 );
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Submission` (
-  `Submission_Index` int PRIMARY KEY AUTO_INCREMENT,
+  `Submission_Index` int,
   `Submission_CBC_Name` varchar(255),
   `Submission_CBC_ID` varchar(255),
   `Submission_Time` datetime,
   `Submission_File_Name` varchar(255),
   `Submission_S3_Path` varchar(255),
   `Date_Submission_Validated` datetime,
-  -- `Research_Participant_ID` varchar(255) , -- guaranteed that one submission won't contain many participants' data? Doubt it.
+  `Submission_Intent` varchar(255),
+  primary key(`Submission_Index`, `Submission_S3_Path`), 
   FOREIGN KEY (`Submission_CBC_ID`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
-  -- FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)
 );
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.Participant (
@@ -57,8 +57,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_SARS_CoV2_PC
 );
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_Infection_Reported` (
-    `Participant_Prior_Infection_ID` int AUTO_INCREMENT PRIMARY KEY,
-    `Research_Participant_ID` varchar(255) NOT NULL,
+    `Research_Participant_ID` varchar(50) NOT NULL,
     `Infectious_Agent` varchar(255) NOT NULL,
     `Submission_CBC` varchar(255) NOT NULL,
  --   `Date_of_Diagnosis` date,  	-- only applicable to SARS-CoV-2
@@ -66,6 +65,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_Infection_Re
     `Duration_of_Infection` int,
     `Duration_of_Infection_Unit` varchar(255),
     -- `Date_of_Report` date,
+    primary key( `Research_Participant_ID`, `Infectious_Agent`),
     FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`Infectious_Agent`) REFERENCES `Infection` (`Infectious_Agent`)  ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
@@ -78,8 +78,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Biospecimen_Type` (
 );
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_Test_Result` (  -- non SARS-CoV-2 priors
-  `Participant_Prior_Test_Result_ID` int PRIMARY KEY AUTO_INCREMENT,
-  `Research_Participant_ID` varchar(255) NOT NULL,
+  `Research_Participant_ID` varchar(50) NOT NULL,
   `Test_Name` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255) NOT NULL,
   `Test_Result` varchar(255) NOT NULL, -- vocab
@@ -87,6 +86,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Prior_Test_Result`
   `Post_Test_Duration` varchar(255), -- vocab
   `Post_Duration_Unit` varchar(255), -- vocab
   `Test_Year` varchar(255), -- vocab
+  primary key(`Research_Participant_ID`,  `Test_Name`),
   -- `Date_of_Sample_Collection` date, -- only applicable to SARS CoV-2
   -- `Date_Test_Performed` date,  -- date of test
   FOREIGN KEY (`Test_Name`) REFERENCES `Clinical_Test` (`Test_Name`)  ON DELETE CASCADE ON UPDATE CASCADE,
@@ -120,13 +120,12 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Symptom` (
    );
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Covid_Symptom_Reported` (
-  `Participant_Covid_Symptom_Reported_ID` int PRIMARY KEY AUTO_INCREMENT,
-  `Research_Participant_ID` varchar(255)  NOT NULL,
+-- Participant_Covid_Symptom_Reported_ID` int PRIMARY KEY AUTO_INCREMENT,
+  `Research_Participant_ID` varchar(50)  NOT NULL,
   `Symptom_Name` varchar(255) NOT NULL,
   `Submission_CBC` varchar(255)  NOT NULL,
   `Symptom_is_Present` TINYINT(1), -- if NULL, no data or NA
-
-  -- PRIMARY KEY (`Research_Participant_ID`), -- this is a linking (many-to-many) table, each row is a unique entity
+  PRIMARY KEY (`Research_Participant_ID`, `Symptom_Name`), -- this is a linking (many-to-many) table, each row is a unique entity
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`Symptom_Name`) REFERENCES `Symptom` (`Symptom_Name`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
@@ -139,11 +138,12 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Comorbidity` (
 );
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Participant_Comorbidity_Reported` (
-  `Participant_Comorbidity_Reported_ID` int PRIMARY KEY AUTO_INCREMENT,
-  `Research_Participant_ID` varchar(255)  NOT NULL,
+--  `Participant_Comorbidity_Reported_ID` int PRIMARY KEY AUTO_INCREMENT,
+  `Research_Participant_ID` varchar(50)  NOT NULL,
   `Submission_CBC` varchar(255),
   `Comorbidity_Name` varchar(255) NOT NULL,
   `Cormobidity_is_Present` varchar(255),   -- TINYINT(1), can be unknown
+  primary key(`Research_Participant_ID`, `Comorbidity_Name`),
   FOREIGN KEY (`Research_Participant_ID`) REFERENCES `Participant` (`Research_Participant_ID`)  ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`Submission_CBC`) REFERENCES `CBC` (`CBC_ID`)  ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -158,7 +158,6 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Tube` (
   PRIMARY KEY (`Tube_ID`)
 );
 
-# table has been completed and updated for new template
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Biospecimen` ( 
   `Biospecimen_ID` varchar(255)  PRIMARY KEY,
   `Research_Participant_ID` varchar(255)  NOT NULL,
@@ -171,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Biospecimen` (
   `Biospecimen_Group` varchar(255),
   `Biospecimen_Type` varchar(255),
 --   `Initial_Volume_of_Biospecimen` int,
-  `Initial_Volume_of_Biospecimen (mL)` int,
+  `Initial_Volume_of_Biospecimen (mL)` float,
   `Biospecimen_Collection_Company_Clinic` varchar(255),
   `Biospecimen_Collector_Initials` varchar(10),
   `Biospecimen_Collection_Year` int(4),
@@ -336,12 +335,12 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Assay_Target`(
   `Positive_Cut_Off_Threshold` varchar(255), -- string value??
   `Negative_Cut_Off_Ceiling` varchar(255), -- string value??
   `Cut_Off_Unit` varchar(255), -- vocab
-  `Low_Positive_Lower_Limit` int,
-  `Low_Positive_Upper_Limit` int,
-  `Medium_Positive_Lower_Limit` int,
-  `Medium_Positive_Upper_Limit` int,
-  `High_Positive_Lower_Limit` int,
-  `High_Positive_Upper_Limit` int,
+  `Low_Positive_Lower_Limit` float,
+  `Low_Positive_Upper_Limit` float,
+  `Medium_Positive_Lower_Limit` float,
+  `Medium_Positive_Upper_Limit` float,
+  `High_Positive_Lower_Limit` float,
+  `High_Positive_Upper_Limit` float,
   `Assay_Antigen_Source` varchar(255),
   `Assay_Antigen_Method_Of_Production` varchar(255),
   `Plasmid_Description` varchar(255),
@@ -380,8 +379,6 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Assay_Organism_Conversion` (
     );
 
 Create Table IF NOT EXISTS `seronetdb-Validated`.`Shipping_Manifest` (
---  `Shipment_ID` int AUTO_INCREMENT,
---  `Shipment_Date` date,
   `Submission_CBC` varchar(255),
   `Submission_Index` int,
   `Study ID` varchar(255),
@@ -483,13 +480,15 @@ FOREIGN KEY (`BSI_Parent_ID`) REFERENCES BSI_Parent_Aliquots (`Biorepository_ID`
 );
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Secondary_Confirm_IDs` (
+`File_Name` varchar (255),   -- Name of shipping manifest
 `Barcode_ID` varchar (255),   -- Child ID
 `BSI ID` varchar(255),
 `Container Type` varchar(255),
 `Material Type` varchar(255),
 `Volume (mL)` varchar(255),
 `Collection Date` varchar(255),
-primary key (`Barcode_ID`, `BSI ID`));#,
+`Destination` varchar(255),
+primary key (`File_Name`, `Barcode_ID`, `BSI ID`));#,
 #FOREIGN KEY (`BSI ID`) REFERENCES `BSI_Parent_Aliquots` (`Biorepository_ID`) ON DELETE CASCADE ON UPDATE CASCADE);
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Secondary_Confirmatory_Test` (
@@ -525,11 +524,10 @@ FOREIGN KEY (`BSI_Parent_ID`) REFERENCES BSI_Parent_Aliquots (`Biorepository_ID`
 );
 
 CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`Updated_Submissions`(
-  `Submission_Index` int PRIMARY KEY AUTO_INCREMENT,
   `Submission_CBC_Name` varchar(255),
   `Submission_Time` datetime,
   `Submission_File_Name` varchar(255),
-  `Submission_S3_Path` varchar(255),
+  `Submission_S3_Path` varchar(255) primary key,
   `Date_Submission_Updated` datetime,
   `Update_Status` varchar(255)
 );
@@ -549,4 +547,10 @@ CREATE TABLE IF NOT EXISTS `seronetdb-Validated`.`CDC_Confrimation_Cutoffs`(
 	`Sub Region` varchar(255) primary key,
 	`Antibody` varchar(255),  -- IgG, IgM
 	`Cut_off` float
+);
+
+Create Table if not Exists  `seronetdb-Validated`.`Deidentifed_Conversion_Table`(
+	`ID_Type` varchar(50),
+    `ID_Value` varchar(50),
+    `MD5_Value` varchar(50)
 );
